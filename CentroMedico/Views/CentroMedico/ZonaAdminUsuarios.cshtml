@@ -1,0 +1,66 @@
+﻿@model IEnumerable<CentroMedico.Models.Usuario>
+
+@{
+    ViewData["Title"] = "ZonaAdminUsuarios";
+    List<UsuariosTipo> Tipos = ViewData["TipoUsuarios"] as List<UsuariosTipo>;
+}
+
+<h1>ZonaAdminUsuarios</h1>
+
+<p>
+    <a asp-controller="CentroMedico" asp-action="ZonaAdmin">Back</a>
+</p>
+
+<form method="post">
+    <label>Buscar por: </label>
+    <select name="tipo" class="form-control">
+        @foreach (UsuariosTipo tipo in Tipos)
+        {
+            <option value="@tipo.Id">@tipo.Tipo</option>
+        }
+    </select>
+    <button class="btn btn-success">
+        Buscar
+    </button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Correo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Correo)
+            </td>
+            <td>
+                    <a asp-controller="CentroMedico" asp-action="DetallesPaciente" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Detalles</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

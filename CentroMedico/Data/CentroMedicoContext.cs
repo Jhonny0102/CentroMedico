@@ -10,5 +10,8 @@ namespace CentroMedico.Data
         {}
 
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<UsuariosTipo> UsuariosTipos { get; set; }
+        public DbSet<Paciente> Paciente { get; set;}
+        public DbSet<Medico> Medico { get; set;}
     }
 }

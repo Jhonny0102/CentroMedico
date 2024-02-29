@@ -1,0 +1,22 @@
+﻿@{
+    string tipo = ViewData["tipo"] as string;
+
+    if (tipo == "usuario")
+    {
+        Usuario usuario = ViewData["usuario"] as Usuario;
+    }
+    else if (tipo == "medico")
+    {
+        Medico usuario = ViewData["usuario"] as Medico;
+    }
+    else
+    {
+        Paciente usuario = ViewData["usuario"] as Paciente;
+    }
+}
+
+@* Problema, como se que datos mostrar en el details??
+Opciones: 
+    ver alguna salida de crear diferentes details para cada uno de los tipos de usuarios.
+    intentar seguir con este modo, de momento conseguimos(no hemos probado aun) que recupere un model,
+    dependiente del tipo de usuario *@
