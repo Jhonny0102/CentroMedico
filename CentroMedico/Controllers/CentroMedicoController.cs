@@ -40,7 +40,7 @@ namespace CentroMedico.Controllers
             if(usuario != null)
             {
                 //Guardamos en la session el id del usuario encontrado.
-                HttpContext.Session.SetInt32("IDUSUARIO",usuario.Id);
+                HttpContext.Session.SetInt32("IDUSUARILOGUEADO",usuario.Id);
                 if (usuario.Id_TipoUsuario == 1)
                 {
                     return RedirectToAction("ZonaAdmin");
@@ -64,14 +64,18 @@ namespace CentroMedico.Controllers
                 return View();
             }
         }
-        // Zona de Administrador.
+
+        // Zona de ADMINISTRADOR ****.
+
+        //Controller que recoge un ID de session y muestra su info
         public IActionResult ZonaAdmin()
         {
-            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARIO");
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             return View(usuario);
         }
 
+        //Controller que guarda los tipos de usuarios y muestra una lista de usuarios
         public IActionResult ZonaAdminUsuarios()
         {
             ViewData["TipoUsuarios"] = this.repo.GetTipoUsuarios();
@@ -86,48 +90,90 @@ namespace CentroMedico.Controllers
             return View(usuarios);
         }
 
+        // Controller que redirije y guarda int en session
         public IActionResult Details(int idUsuario, int idTipo)
         {
+            //Guardamos el id del usuario en la session
+            HttpContext.Session.SetInt32("IDUSUARIOVER", idUsuario);
+            //Si el tipo es 1 o 2 redirije a DetailsUsuario
             if (idTipo == 1 || idTipo == 2)
             {
-                ViewData["tipo"] = "usuario";
-                ViewData["usuario"] = this.repo.FindUsuario(idUsuario);
-                return View();
+                return RedirectToAction("DetailsUsuario");
             }
+            //Si el tipo es 3 redirije a DetailsMedico
             else if (idTipo == 3)
             {
-                ViewData["tipo"] = "medico";
-                ViewData["usuario"] = this.repo.FindMedico(idUsuario);
-                return View();
+                return RedirectToAction("DetailsMedico");
             }
+            //Si el tipo distinto redirije a DetailsPaciente
             else
             {
-                ViewData["tipo"] = "paciente";
-                ViewData["usuario"] = this.repo.FindPaciente(idUsuario);
-                return View();
+                return RedirectToAction("DetailsPaciente");
             }
         }
 
-        // Zona de Recepcionistas.
+        //Controller que muestra los detalles de MEDICO
+        public IActionResult DetailsMedico()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
+            MedicoDetallado medico = this.repo.FindMedicoDetallado(id);
+            return View(medico);
+        }
+
+        //Controller que muestra los detalles de USUARIO
+        public IActionResult DetailsUsuario()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
+            UsuarioDetallado usuario = this.repo.FindUsuarioDetallado(id);
+            return View(usuario);
+        }
+
+        //Controller que muestra los detalles de PACIENTE (Si añadimos una ? seguido del tipo en el model puede aceptar nulos)
+        public IActionResult DetailsPaciente()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
+            PacienteDetallado paciente = this.repo.FindPacienteDetallado(id);
+            return View(paciente);
+        }
+
+        //Controller que elimina un USUARIO
+        public IActionResult DeleteUsuario(int id, int tipo)
+        {
+            //**** Mostrar un Alert o algo de confirmacion, ya que esto borra todos los registros relacionados con ese usuario ****//
+            this.repo.DeleteUsuario(id, tipo);
+            return RedirectToAction("ZonaAdminUsuarios");
+        }
+
+
+
+
+
+
+
+        // Zona de RECEPCIONISTA ***.
         public IActionResult ZonaRecepcionista()
         {
-            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARIO");
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             return View(usuario);
         }
 
-        // Zona de Medico.
+
+
+        // Zona de MEDICO ***.
         public IActionResult ZonaMedico()
         {
-            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARIO");
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             return View(usuario);
         }
 
-        // Zona de Pacientes.
+
+
+        // Zona de PACIENTES ***.
         public IActionResult ZonaPaciente()
         {
-            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARIO");
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             return View(usuario);
         }

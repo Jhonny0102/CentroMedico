@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace CentroMedico.Models
 {
-    [Table("V_ALL_MEDICOS")]
-    public class Medico
+    [Table("V_ALL_MEDICOS_DETALLADO")]
+    public class MedicoDetallado
     {
         [Key]
         [Column("ID")]
@@ -16,10 +16,10 @@ namespace CentroMedico.Models
         [Column("CONTRA")]
         public string Contra { get; set; }
         [Column("ESPECIALIDAD")]
-        public string Especialidad{ get; set; }
-        [Column("ID_ESTADOUSUARIO")]
-        public int EstadoUsuario { get; set; }
-        [Column("ID_TIPOUSUARIO")]
-        public int TipoUsuario { get; set; }
+        public string Especialidad { get; set; }
+        [Column("ESTADO")]
+        public string Estado { get; set; }
+        [Column("TIPO")]
+        public string Tipo{ get; set; }
     }
 }

@@ -57,8 +57,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Correo)
             </td>
-            <td>
-                    <a asp-controller="CentroMedico" asp-action="DetallesPaciente" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Detalles</a>
+            <td>                    
+                <a asp-controller="CentroMedico" asp-action="Details" asp-route-idUsuario="@item.Id" asp-route-idTipo="@item.Id_TipoUsuario">Detalles</a>
+                    <a asp-controller="CentroMedico" asp-action="DeleteUsuario" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Eliminar</a>
             </td>
         </tr>
 }
