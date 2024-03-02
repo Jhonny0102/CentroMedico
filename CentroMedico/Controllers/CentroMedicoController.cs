@@ -67,6 +67,8 @@ namespace CentroMedico.Controllers
 
         // Zona de ADMINISTRADOR ****.
 
+        /// Zona de CRUD USUARIOS ///
+
         //Controller que recoge un ID de session y muestra su info
         public IActionResult ZonaAdmin()
         {
@@ -89,6 +91,11 @@ namespace CentroMedico.Controllers
             List<Usuario> usuarios = this.repo.GetUsuariosTipo(tipo);
             return View(usuarios);
         }
+        //Controller dar de alta USUARIO y MEDICOS
+
+
+
+
 
         // Controller que redirije y guarda int en session
         public IActionResult Details(int idUsuario, int idTipo)
@@ -136,7 +143,7 @@ namespace CentroMedico.Controllers
             return View(paciente);
         }
 
-        //Controller que elimina un USUARIO
+        //Controller que elimina DIFERENTES TIPOS USUARIOS
         public IActionResult DeleteUsuario(int id, int tipo)
         {
             //**** Mostrar un Alert o algo de confirmacion, ya que esto borra todos los registros relacionados con ese usuario ****//
@@ -144,11 +151,79 @@ namespace CentroMedico.Controllers
             return RedirectToAction("ZonaAdminUsuarios");
         }
 
+        //Controller que editar
+        public IActionResult Edit(int id , int tipo)
+        {
+            HttpContext.Session.SetInt32("IDUSUARIOEDIT", id);
+            if (tipo == 1 | tipo == 2)
+            {
+                return RedirectToAction("EditUsuario");
+            }
+            else if(tipo == 3)
+            {
+                return RedirectToAction("EditMedico");
+            }
+            else
+            {
+                return RedirectToAction("EditPaciente");
+            }
+        }
+
+        //Controller de editar USUARIO
+        public IActionResult EditUsuario()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
+            Usuario usuario = this.repo.FindUsuario(id);
+            return View(usuario);
+        }
+        [HttpPost]
+        public IActionResult EditUsuario(Usuario usuario)
+        {
+            this.repo.EditUsuario(usuario.Id,usuario.Nombre,usuario.Apellido,usuario.Correo,usuario.Contra,usuario.Id_EstadoUsuario,usuario.Id_TipoUsuario);
+            return RedirectToAction("ZonaAdminUsuarios");
+        }
+
+        //Controller de editar MEDICO
+        public IActionResult EditMedico()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
+            Medico medico = this.repo.FindMedico(id);
+            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+            return View(medico);
+        }
+        [HttpPost]
+        public IActionResult EditMedico(Medico medico)
+        {
+            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+            this.repo.EditMedico(medico.Id,medico.Nombre,medico.Apellido,medico.Correo,medico.Contra,medico.EstadoUsuario,medico.TipoUsuario, medico.Especialidad);
+            return RedirectToAction("ZonaAdminUsuarios");
+        }
+
+        //Controller de editar PACIENTE
+        public IActionResult EditPaciente()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
+            Paciente paciente = this.repo.FindPaciente(id);
+            return View(paciente);
+        }
+        [HttpPost]
+        public IActionResult EditPaciente(Paciente paciente)
+        {
+            this.repo.EditPaciente(paciente.Id, paciente.Nombre, paciente.Apellido, paciente.Correo, paciente.Contra, paciente.Telefono, paciente.Direccion, paciente.Edad, paciente.Genero, paciente.EstadoUsuario, paciente.TipoUsuario);
+            return RedirectToAction("ZonaAdminUsuarios");
+        }
+
+        /// Fin Zona de CRUD USUARIOS ///
+
+        /// Zona CRUD CITAS ///
 
 
 
 
 
+
+
+        /// Fin Zona CRUD CITAS ///
 
         // Zona de RECEPCIONISTA ***.
         public IActionResult ZonaRecepcionista()

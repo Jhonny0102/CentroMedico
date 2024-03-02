@@ -59,7 +59,9 @@
             </td>
             <td>                    
                 <a asp-controller="CentroMedico" asp-action="Details" asp-route-idUsuario="@item.Id" asp-route-idTipo="@item.Id_TipoUsuario">Detalles</a>
-                    <a asp-controller="CentroMedico" asp-action="DeleteUsuario" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Eliminar</a>
+                <a asp-controller="CentroMedico" asp-action="DeleteUsuario" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Eliminar</a>
+                <a asp-controller="CentroMedico" asp-action="Edit" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Editar</a>
+
             </td>
         </tr>
 }

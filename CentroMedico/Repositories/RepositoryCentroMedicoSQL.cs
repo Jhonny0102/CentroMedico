@@ -9,13 +9,14 @@ using System.Diagnostics.Contracts;
 
 //create view V_ALL_MEDICOS
 //as
-//	SELECT USUARIOS.ID, USUARIOS.NOMBRE, USUARIOS.APELLIDO, USUARIOS.CORREO, USUARIOS.CONTRA, USUARIOS.ID_ESTADOUSUARIO, USUARIOS.ID_TIPOUSUARIO, ESPECIALIDADES.ESPECIALIDAD
+//	SELECT USUARIOS.ID, USUARIOS.NOMBRE, USUARIOS.APELLIDO, USUARIOS.CORREO, USUARIOS.CONTRA, USUARIOS.ID_ESTADOUSUARIO, USUARIOS.ID_TIPOUSUARIO,
+//    MEDICOESPECIALIDAD.ID_ESPECIALIDAD
 //	FROM USUARIOS
 //	INNER JOIN MEDICOESPECIALIDAD 
 //	ON USUARIOS.ID = MEDICOESPECIALIDAD.ID_MEDICO
-//	INNER JOIN ESPECIALIDADES
-//	ON MEDICOESPECIALIDAD.ID_ESPECIALIDAD = ESPECIALIDADES.ID
+//	WHERE USUARIOS.ID_TIPOUSUARIO = 3
 //go
+
 
 //create view V_ALL_PACIENTES
 //as
@@ -78,67 +79,89 @@ using System.Diagnostics.Contracts;
 
 #region PROCEDURES
 
-//create procedure SP_DELETE_PACIENTE
+//create procedure sp_delete_paciente
 //(@id int)
 //as
-//    DELETE FROM DATOSEXTRASPACIENTES 
-//	WHERE ID_USUARIO=@id
+//    delete from datosextraspacientes 
+//	where id_usuario=@id
 
-//	DELETE FROM MEDICOPACIENTE
-//	WHERE ID_PACIENTE=@id
+//	delete from medicopaciente
+//	where id_paciente=@id
 
-//	DELETE FROM PETICIONESBAJAS
-//	WHERE ID_USUARIO=@id
+//	delete from peticionesbajas
+//	where id_usuario=@id
 
-//	DELETE FROM MEDICAMENTOPACIENTE
-//	WHERE ID_PACIENTE=@id
+//	delete from medicamentopaciente
+//	where id_paciente=@id
 
-//	DELETE FROM MEDICOPACIENTE
-//	WHERE ID_PACIENTE=@id
+//	delete from medicopaciente
+//	where id_paciente=@id
 
-//	DELETE FROM CITAS
-//	WHERE ID_PACIENTE=@id
-//	--Esta consulta de accion de ultimo
-//	DELETE FROM USUARIOS 
-//	WHERE ID=@id
+//	delete from citas
+//	where id_paciente=@id
+//	--esta consulta de accion de ultimo
+//	delete from usuarios 
+//	where id=@id
 //go
 
 
-//create procedure SP_DELETE_MEDICO
+//create procedure sp_delete_medico
 //(@id int)
 //as
-//    DELETE FROM MEDICOPACIENTE
-//	WHERE ID_MEDICO=@id
+//    delete from medicopaciente
+//	where id_medico=@id
 
-//	DELETE FROM PETICIONESBAJAS
-//	WHERE ID_USUARIO=@id
+//	delete from peticionesbajas
+//	where id_usuario=@id
 
-//	DELETE FROM MEDICAMENTOPACIENTE
-//	WHERE ID_MEDICO=@id
+//	delete from medicamentopaciente
+//	where id_medico=@id
 
-//	DELETE FROM MEDICOPACIENTE
-//	WHERE ID_MEDICO=@id
+//	delete from medicopaciente
+//	where id_medico=@id
 
-//	DELETE FROM CITAS
-//	WHERE ID_MEDICO=@id
+//	delete from citas
+//	where id_medico=@id
 
-//	DELETE FROM MEDICOESPECIALIDAD
-//	WHERE ID_MEDICO=@id
-//	--Esta consulta de accion de ultimo
-//	DELETE FROM USUARIOS 
-//	WHERE ID=@id
+//	delete from medicoespecialidad
+//	where id_medico=@id
+//	--esta consulta de accion de ultimo
+//	delete from usuarios 
+//	where id=@id
 //go
 
 
-//create procedure SP_DELETE_USUARIO
+//create procedure sp_delete_usuario
 //(@id int)
 //as
-//    DELETE FROM PETICIONESBAJAS
-//	WHERE ID_USUARIO=@id
+//    delete from peticionesbajas
+//	where id_usuario=@id
 
-//	--Esta consulta de accion de ultimo
-//	DELETE FROM USUARIOS 
-//	WHERE ID=@id
+//	--esta consulta de accion de ultimo
+//	delete from usuarios 
+//	where id=@id
+//go
+
+//create procedure sp_edit_medico
+//(@id int, @nombre nvarchar(50), @apellido nvarchar(50), @correo nvarchar(50), @contra nvarchar(50), @estado int, @tipo int , @especialidad int)
+//as
+//	update usuarios
+//	set id=@id, nombre = @nombre, apellido = @apellido, correo = @correo, contra = @contra, id_estadousuario = @estado, id_tipousuario = @tipo
+//	where id=@id
+//	update medicoespecialidad
+//	set id_especialidad=@especialidad
+//	where id_medico=@id
+//go
+
+//create procedure sp_edit_paciente
+//(@id int, @nombre nvarchar(50), @apellido nvarchar(50), @correo nvarchar(50), @contra nvarchar(50), @estado int, @tipo int , @telefono int, @direccion nvarchar(50), @edad int, @genero nvarchar(50))
+//as
+//	update usuarios
+//	set id=@id, nombre = @nombre, apellido = @apellido, correo = @correo, contra = @contra, id_estadousuario = @estado, id_tipousuario = @tipo
+//	where id=@id
+//	update datosextraspacientes
+//	set telefono=@telefono, direccion = @direccion, edad = @edad, genero = @genero
+//	where id_usuario=@id
 //go
 
 #endregion
@@ -162,11 +185,11 @@ namespace CentroMedico.Repositories
             return consulta.FirstOrDefault();
         }
 
-        // 
+        //Metodo para crear PACIENTE
         public void CreatePaciente(string nombre, string apellido, string correo, string contra)
         {
             var consulta = from datos in this.context.Usuarios select datos;
-            int maxId = (consulta.Max(a => a.Id)) + 1; //Punto de interrupcion para ver que hace.
+            int maxId = (consulta.Max(a => a.Id)) + 1;
             Usuario usuario = new Usuario();
             usuario.Id = maxId;
             usuario.Nombre = nombre;
@@ -177,6 +200,18 @@ namespace CentroMedico.Repositories
             usuario.Id_TipoUsuario = 4;
             this.context.Usuarios.Add(usuario);
             this.context.SaveChanges();
+        }
+
+        //Metodo para crear MEDICO
+        public void CreateMedico(string nombre, string apellido, string correo, string contra, int especialidad)
+        {
+            throw new NotImplementedException();
+        }
+
+        //Metodo para crear USUARIO
+        public void CreateUsuario(string nombre, string apellido, string correo, string contra)
+        {
+            throw new NotImplementedException();
         }
 
         //Metodo para encontrar un PACIENTE
@@ -267,12 +302,51 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para editar un USUARIO
-        public void EditUsuario(int id, int tipo)
+        public void EditUsuario(int id,string nombre, string apellido, string correo, string contra,int estado, int tipo)
         {
-            //Queremos primero, saber que tipo de usuario es el que queremos editar
-            //Segundo, mostrar los datos de este en un formulario , ver si con model detallado o no . Y ver que necesitamos
-            //Tercero, guardar los datos nuevos y redirigirlo de nuevo a la zonaAdminUsuarios
-            throw new NotImplementedException();
+            Usuario usuario = this.FindUsuario(id);
+            usuario.Id = id;
+            usuario.Nombre = nombre;
+            usuario.Apellido = apellido;
+            usuario.Correo = correo;
+            usuario.Contra = contra;
+            usuario.Id_EstadoUsuario = estado;
+            usuario.Id_TipoUsuario = tipo;
+            this.context.SaveChanges();
+
+        }
+
+        //Metodo para editar un MEDICO
+        public void EditMedico(int id, string nombre, string apellido, string correo, string contra, int estado, int tipo , int especialidad)
+        {
+            string sql = "sp_edit_medico @id, @nombre, @apellido, @correo, @contra, @estado, @tipo, @especialidad";
+            SqlParameter pamId = new SqlParameter("@id", id);
+            SqlParameter pamNombre = new SqlParameter("@nombre", nombre);
+            SqlParameter pamApellido = new SqlParameter("@apellido", apellido);
+            SqlParameter pamCorreo = new SqlParameter("@correo", correo);
+            SqlParameter pamContra = new SqlParameter("@contra", contra);
+            SqlParameter pamEspecialidad = new SqlParameter("@especialidad", especialidad);
+            SqlParameter pamEstado = new SqlParameter("@estado", estado);
+            SqlParameter pamTipo = new SqlParameter("@tipo", tipo);
+            this.context.Database.ExecuteSqlRaw(sql, pamId,pamNombre,pamApellido,pamCorreo,pamContra,pamEspecialidad,pamEstado,pamTipo);
+        }
+
+        //Metodo para editar un PACIENTE (*** Problema, si el paciente no tiene toda la informacion completa no lo actualiza)
+        public void EditPaciente(int id, string nombre, string apellido, string correo, string contra, int? telefono, string? direccion, int? edad, string? genero, int estado, int tipo)
+        {
+            string sql = "sp_edit_paciente @id, @nombre, @apellido, @correo, @contra, @estado, @tipo, @telefono, @direccion, @edad, @genero";
+            SqlParameter pamId = new SqlParameter("@id", id);
+            SqlParameter pamNombre = new SqlParameter("@nombre", nombre);
+            SqlParameter pamApellido = new SqlParameter("@apellido", apellido);
+            SqlParameter pamCorreo = new SqlParameter("@correo", correo);
+            SqlParameter pamContra = new SqlParameter("@contra", contra);
+            SqlParameter pamEstado = new SqlParameter("@estado", estado);
+            SqlParameter pamTipo = new SqlParameter("@tipo", tipo);
+            SqlParameter pamTelefono = new SqlParameter("@telefono", telefono);
+            SqlParameter pamDireccion = new SqlParameter("@direccion", direccion);
+            SqlParameter pamEdad = new SqlParameter("@edad", edad);
+            SqlParameter pamGenero = new SqlParameter("@genero", genero);
+            this.context.Database.ExecuteSqlRaw(sql, pamId, pamNombre, pamApellido, pamCorreo, pamContra, pamEstado, pamTipo, pamTelefono ,pamDireccion, pamEdad, pamGenero);
         }
 
         // 
@@ -281,6 +355,14 @@ namespace CentroMedico.Repositories
         public List<UsuariosTipo> GetTipoUsuarios()
         {
             var consulta = from datos in this.context.UsuariosTipos
+                           select datos;
+            return consulta.ToList();
+        }
+
+        //Metodo para obtener todas las especialidades de los medicos
+        public List<Especialidades> GetEspecialidades()
+        {
+            var consulta = from datos in this.context.Especialidades
                            select datos;
             return consulta.ToList();
         }

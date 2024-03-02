@@ -9,6 +9,8 @@ namespace CentroMedico.Models
         [Key]
         [Column("ID")]
         public int Id { get; set; }
+        [Column("NOMBRE")]
+        public string Nombre { get; set; }
         [Column("APELLIDO")]
         public string Apellido { get; set; }
         [Column("CORREO")]
@@ -16,13 +18,13 @@ namespace CentroMedico.Models
         [Column("CONTRA")]
         public string Contra { get; set; }
         [Column("TELEFONO")]
-        public int Telefono { get; set; }
+        public int? Telefono { get; set; }
         [Column("DIRECCION")]
-        public string Direccion { get; set; }
+        public string? Direccion { get; set; }
         [Column("EDAD")]
-        public int Edad { get; set; }
+        public int? Edad { get; set; }
         [Column("GENERO")]
-        public string Genero { get; set; }
+        public string? Genero { get; set; }
         [Column("ID_ESTADOUSUARIO")]
         public int EstadoUsuario { get; set; }
         [Column("ID_TIPOUSUARIO")]
