@@ -6,14 +6,14 @@ namespace CentroMedico.Repositories
     {
         public Usuario GetLogin(string correo, string contra);
         
-        public void CreatePaciente(string nombre, string apellido, string correo, string contra);
+        public void CreatePaciente(string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero);
         public void CreateMedico(string nombre, string apellido, string correo, string contra, int especialidad);
-        public void CreateUsuario(string nombre, string apellido, string correo, string contra);
+        public void CreateUsuario(string nombre, string apellido, string correo, string contra, int tipo );
 
         public void DeleteUsuario(int id, int tipo);
         public void EditUsuario(int id, string nombre, string apellido, string correo, string contra, int estado, int tipo);
         public void EditMedico(int id, string nombre, string apellido, string correo, string contra, int especialidad, int estado, int tipo);
-        public void EditPaciente(int id, string nombre, string apellido, string correo, string contra, int? telefono , string? direccion , int? edad , string? genero , int Estado, int tipo);
+        public void EditPaciente(int id, string nombre, string apellido, string correo, string contra, int telefono , string direccion , int edad , string genero , int Estado, int tipo);
 
         public List<UsuariosTipo> GetTipoUsuarios();
         public List<Usuario> GetUsuariosTipo(int tipo);

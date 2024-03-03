@@ -164,6 +164,28 @@ using System.Diagnostics.Contracts;
 //	where id_usuario=@id
 //go
 
+//create procedure sp_insert_medico
+//(@nombre nvarchar(50), @apellido nvarchar(50), @correo nvarchar(50), @contra nvarchar(50), @especialidad int , @estado int, @tipo int )
+//as
+//	DECLARE @idMaxUsuario INT
+//	SELECT @idMaxUsuario = MAX(ID) + 1 FROM USUARIOS
+//	INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, CORREO, CONTRA, ID_ESTADOUSUARIO, ID_TIPOUSUARIO) VALUES (@idMaxUsuario, @nombre, @apellido, @correo, @contra, @estado, @tipo)
+//	DECLARE @idMaxMedicoEspecialidad int
+//	SELECT @idMaxMedicoEspecialidad = MAX(ID) + 1 FROM MEDICOESPECIALIDAD
+//	INSERT INTO MEDICOESPECIALIDAD (ID, ID_MEDICO, ID_ESPECIALIDAD) VALUES (@idMaxMedicoEspecialidad, @idMaxUsuario, @especialidad)
+//go
+
+//create procedure sp_insert_paciente
+//( @nombre nvarchar(50), @apellido nvarchar(50), @correo nvarchar(50), @contra nvarchar(50), @telefono int, @direccion nvarchar(50), @edad int, @genero nvarchar(50))
+//as
+//	DECLARE @idMaxUsuario INT
+//	SELECT @idMaxUsuario = MAX(ID) + 1 FROM USUARIOS
+//	INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, CORREO, CONTRA, ID_ESTADOUSUARIO, ID_TIPOUSUARIO) VALUES (@idMaxUsuario, @nombre, @apellido, @correo, @contra,1,4)
+//	DECLARE @idMaxDatosExtras int
+//	SELECT @idMaxDatosExtras = MAX(ID) + 1 FROM DATOSEXTRASPACIENTES
+//	INSERT INTO DATOSEXTRASPACIENTES (ID, ID_USUARIO, TELEFONO, DIRECCION, EDAD, GENERO) VALUES (@idMaxDatosExtras, @idMaxUsuario, @telefono, @direccion, @edad, @genero)
+//go
+
 #endregion
 
 namespace CentroMedico.Repositories
@@ -185,8 +207,35 @@ namespace CentroMedico.Repositories
             return consulta.FirstOrDefault();
         }
 
-        //Metodo para crear PACIENTE
-        public void CreatePaciente(string nombre, string apellido, string correo, string contra)
+        //Metodo para crear PACIENTE ****
+        public void CreatePaciente(string nombre, string apellido, string correo, string contra , int telefono , string direccion,int edad , string genero)
+        {
+            string sql = "sp_insert_paciente  @nombre, @apellido, @correo, @contra, @telefono, @direccion, @edad, @genero";
+            SqlParameter pamNombre = new SqlParameter("@nombre", nombre);
+            SqlParameter pamApellido = new SqlParameter("@apellido", apellido);
+            SqlParameter pamCorreo = new SqlParameter("@correo", correo);
+            SqlParameter pamContra = new SqlParameter("@contra", contra);
+            SqlParameter pamTelefono = new SqlParameter("@telefono", telefono);
+            SqlParameter pamDireccion = new SqlParameter("@direccion", direccion);
+            SqlParameter pamEdad = new SqlParameter("@edad", edad);
+            SqlParameter pamGenero = new SqlParameter("@genero", genero);
+            this.context.Database.ExecuteSqlRaw(sql, pamNombre, pamApellido, pamCorreo, pamContra, pamTelefono, pamDireccion, pamEdad, pamGenero);
+        }
+
+        //Metodo para crear MEDICO
+        public void CreateMedico(string nombre, string apellido, string correo, string contra, int especialidad)
+        {
+            string sql = "sp_insert_medico @nombre, @apellido, @correo, @contra, @especialidad";
+            SqlParameter pamNombre = new SqlParameter("@nombre", nombre);
+            SqlParameter pamApellido = new SqlParameter("@apellido", apellido);
+            SqlParameter pamCorreo = new SqlParameter("@correo", correo);
+            SqlParameter pamContra = new SqlParameter("@contra", contra);
+            SqlParameter pamEspecialidad = new SqlParameter("@especialidad", especialidad);
+            this.context.Database.ExecuteSqlRaw(sql, pamNombre, pamApellido, pamCorreo, pamContra, pamEspecialidad);
+        }
+
+        //Metodo para crear USUARIO
+        public void CreateUsuario(string nombre, string apellido, string correo, string contra , int tipo)
         {
             var consulta = from datos in this.context.Usuarios select datos;
             int maxId = (consulta.Max(a => a.Id)) + 1;
@@ -197,21 +246,9 @@ namespace CentroMedico.Repositories
             usuario.Correo = correo;
             usuario.Contra = contra;
             usuario.Id_EstadoUsuario = 1;
-            usuario.Id_TipoUsuario = 4;
+            usuario.Id_TipoUsuario = tipo;
             this.context.Usuarios.Add(usuario);
             this.context.SaveChanges();
-        }
-
-        //Metodo para crear MEDICO
-        public void CreateMedico(string nombre, string apellido, string correo, string contra, int especialidad)
-        {
-            throw new NotImplementedException();
-        }
-
-        //Metodo para crear USUARIO
-        public void CreateUsuario(string nombre, string apellido, string correo, string contra)
-        {
-            throw new NotImplementedException();
         }
 
         //Metodo para encontrar un PACIENTE
@@ -332,7 +369,7 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para editar un PACIENTE (*** Problema, si el paciente no tiene toda la informacion completa no lo actualiza)
-        public void EditPaciente(int id, string nombre, string apellido, string correo, string contra, int? telefono, string? direccion, int? edad, string? genero, int estado, int tipo)
+        public void EditPaciente(int id, string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero, int estado, int tipo)
         {
             string sql = "sp_edit_paciente @id, @nombre, @apellido, @correo, @contra, @estado, @tipo, @telefono, @direccion, @edad, @genero";
             SqlParameter pamId = new SqlParameter("@id", id);

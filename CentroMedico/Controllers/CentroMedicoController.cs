@@ -17,14 +17,14 @@ namespace CentroMedico.Controllers
         }
 
         // Alta de Pacientes.
-        public IActionResult AltaPaciente()
+        public IActionResult CreatePaciente()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult AltaPaciente(Usuario usuario)
+        public IActionResult CreatePaciente(Paciente paciente)
         {
-            this.repo.CreatePaciente(usuario.Nombre,usuario.Apellido,usuario.Correo,usuario.Contra);
+            this.repo.CreatePaciente(paciente.Nombre, paciente.Apellido, paciente.Correo,paciente.Contra, paciente.Telefono, paciente.Direccion, paciente.Edad, paciente.Genero);
             return RedirectToAction("Index");
         }
 
@@ -91,11 +91,33 @@ namespace CentroMedico.Controllers
             List<Usuario> usuarios = this.repo.GetUsuariosTipo(tipo);
             return View(usuarios);
         }
-        //Controller dar de alta USUARIO y MEDICOS
 
+        //Controller dar de alta MEDICOS
+        public IActionResult CreateMedico()
+        {
+            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+            return View();
+        }
 
+        [HttpPost]
+        public IActionResult CreateMedico(Medico medico)
+        {
+            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+            this.repo.CreateMedico(medico.Nombre,medico.Apellido,medico.Correo,medico.Contra,medico.Especialidad);
+            return RedirectToAction("ZonaAdminUsuarios");
+        }
 
-
+        //Controller dar de alta USUARIOS
+        public IActionResult CreateUsuario()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult CreateUsuario(Usuario usuario)
+        {
+            this.repo.CreateUsuario(usuario.Nombre,usuario.Apellido,usuario.Correo,usuario.Contra,usuario.Id_TipoUsuario);
+            return RedirectToAction("ZonaAdminUsuarios");
+        }
 
         // Controller que redirije y guarda int en session
         public IActionResult Details(int idUsuario, int idTipo)

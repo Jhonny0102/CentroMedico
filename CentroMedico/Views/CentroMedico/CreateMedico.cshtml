@@ -1,16 +1,16 @@
-﻿@model CentroMedico.Models.Usuario
+﻿@model CentroMedico.Models.Medico
 
 @{
-    ViewData["Title"] = "AltaPaciente";
+    List<Especialidades> especialidades = ViewData["ESPECIALIDADES"] as List<Especialidades>;
 }
 
-<h1>AltaPaciente</h1>
+<h1>CreateMedico</h1>
 
-<h4>Usuario</h4>
+<h4>Medico</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AltaPaciente">
+        <form asp-action="CreateMedico">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -33,6 +33,16 @@
                 <span asp-validation-for="Contra" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Especialidad" class="control-label"></label>
+                <select name="Especialidad" class="form-control">
+                    @foreach(Especialidades espe in especialidades)
+                    {
+                        <option value="@espe.Id">@espe.Especialidad</option>
+                    }
+                </select>
+                <span asp-validation-for="Especialidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
@@ -40,7 +50,7 @@
 </div>
 
 <div>
-    <a asp-controller="Home" asp-action="Index">Back to List</a>
+    <a asp-action="ZonaAdminUsuarios">Back to List</a>
 </div>
 
 @section Scripts {
