@@ -28,6 +28,17 @@ namespace CentroMedico.Controllers
             return RedirectToAction("Index");
         }
 
+        //Cerrar Session
+        public IActionResult CloseSession()
+        {
+            HttpContext.Session.Clear();
+            //Todos los view usado por admin, por si lo necesitas
+            //ViewData["IDUSUARILOGUEADO"];
+            //ViewData["IDUSUARIOVER"];
+            //ViewData["IDUSUARIOEDIT"];
+            return RedirectToAction("Index");
+        }
+
         // Login de usuarios.
         public IActionResult Login()
         {

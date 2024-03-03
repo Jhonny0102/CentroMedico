@@ -12,6 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
+
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CentroMedico</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -32,16 +33,19 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="Login">Loguear</a></li>
                                 <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="CreatePaciente">Registrar</a></li>
+                                <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="CloseSession">Cerrar</a></li>
                             </ul>
                         </li>
                     </ul>
                 </div>
+
             </div>
         </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
+            
         </main>
     </div>
 
