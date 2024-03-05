@@ -19,12 +19,15 @@ namespace CentroMedico.Controllers
         // Alta de Pacientes.
         public IActionResult CreatePaciente()
         {
+            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
             return View();
         }
         [HttpPost]
-        public IActionResult CreatePaciente(Paciente paciente)
+        public IActionResult CreatePaciente(Paciente paciente, int especialidad)
         {
-            this.repo.CreatePaciente(paciente.Nombre, paciente.Apellido, paciente.Correo,paciente.Contra, paciente.Telefono, paciente.Direccion, paciente.Edad, paciente.Genero);
+            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+            int medico = this.repo.GetIdMedico(especialidad);
+            this.repo.CreatePaciente(paciente.Nombre, paciente.Apellido, paciente.Correo,paciente.Contra, paciente.Telefono, paciente.Direccion, paciente.Edad, paciente.Genero,medico);
             return RedirectToAction("Index");
         }
 
@@ -249,7 +252,11 @@ namespace CentroMedico.Controllers
         /// Fin Zona de CRUD USUARIOS ///
 
         /// Zona CRUD CITAS ///
-
+        public IActionResult ZonaAdminCitas()
+        {
+            List<Citas> citas = this.repo.GetAllCitas();
+            return View(citas);
+        }
 
 
 
@@ -284,6 +291,11 @@ namespace CentroMedico.Controllers
             int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             return View(usuario);
+        }
+        public IActionResult GetMiMedico(int idPaciente)
+        {
+            MedicoDetallado medicoAsignado = this.repo.GetMiMedico(idPaciente);
+            return View(medicoAsignado);
         }
     }
 }

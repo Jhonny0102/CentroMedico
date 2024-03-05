@@ -6,7 +6,7 @@ namespace CentroMedico.Repositories
     {
         public Usuario GetLogin(string correo, string contra);
         
-        public void CreatePaciente(string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero);
+        public void CreatePaciente(string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero, int medico);
         public void CreateMedico(string nombre, string apellido, string correo, string contra, int especialidad);
         public void CreateUsuario(string nombre, string apellido, string correo, string contra, int tipo );
 
@@ -27,6 +27,9 @@ namespace CentroMedico.Repositories
         public MedicoDetallado FindMedicoDetallado(int id);
         public Usuario FindUsuario(int id);
         public UsuarioDetallado FindUsuarioDetallado(int id);
+
+        public List<Citas> GetAllCitas();
+        public MedicoDetallado GetMiMedico(int idPaciente);
     }
 
 }

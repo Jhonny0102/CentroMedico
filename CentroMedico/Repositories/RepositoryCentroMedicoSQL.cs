@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics.Contracts;
+using System.Data;
+
+
+
 
 #region VISTAS
 
@@ -75,8 +79,6 @@ using System.Diagnostics.Contracts;
 //go
 
 #endregion
-
-
 #region PROCEDURES
 
 //create procedure sp_delete_paciente
@@ -176,16 +178,30 @@ using System.Diagnostics.Contracts;
 //go
 
 //create procedure sp_insert_paciente
-//( @nombre nvarchar(50), @apellido nvarchar(50), @correo nvarchar(50), @contra nvarchar(50), @telefono int, @direccion nvarchar(50), @edad int, @genero nvarchar(50))
+//( @nombre nvarchar(50), @apellido nvarchar(50), @correo nvarchar(50), @contra nvarchar(50), @telefono int, @direccion nvarchar(50), @edad int, @genero nvarchar(50), @medico int)
 //as
 //	DECLARE @idMaxUsuario INT
 //	SELECT @idMaxUsuario = MAX(ID) + 1 FROM USUARIOS
 //	INSERT INTO USUARIOS (ID, NOMBRE, APELLIDO, CORREO, CONTRA, ID_ESTADOUSUARIO, ID_TIPOUSUARIO) VALUES (@idMaxUsuario, @nombre, @apellido, @correo, @contra,1,4)
+
 //	DECLARE @idMaxDatosExtras int
 //	SELECT @idMaxDatosExtras = MAX(ID) + 1 FROM DATOSEXTRASPACIENTES
 //	INSERT INTO DATOSEXTRASPACIENTES (ID, ID_USUARIO, TELEFONO, DIRECCION, EDAD, GENERO) VALUES (@idMaxDatosExtras, @idMaxUsuario, @telefono, @direccion, @edad, @genero)
+
+//	DECLARE @idMaxMedicoPaciente int
+//	SELECT @idMaxMedicoPaciente = MAX(ID) + 1 FROM MEDICOPACIENTE
+//	INSERT INTO MEDICOPACIENTE (ID, ID_MEDICO, ID_PACIENTE) VALUES (@idMaxMedicoPaciente, @medico, @idMaxUsuario)
 //go
 
+//CREATE PROCEDURE SP_DETALLES_TUMEDICO
+//(@idPaciente int, @idMedico int out)
+//AS
+//	select @idMedico = USUARIOS.ID from USUARIOS 
+//	where ID = 
+//	( 
+//		select ID_MEDICO from MEDICOPACIENTE where ID_PACIENTE=@idPaciente
+//	)	
+//GO
 #endregion
 
 namespace CentroMedico.Repositories
@@ -207,10 +223,10 @@ namespace CentroMedico.Repositories
             return consulta.FirstOrDefault();
         }
 
-        //Metodo para crear PACIENTE ****
-        public void CreatePaciente(string nombre, string apellido, string correo, string contra , int telefono , string direccion,int edad , string genero)
+        //Metodo para crear PACIENTE
+        public void CreatePaciente(string nombre, string apellido, string correo, string contra , int telefono , string direccion,int edad , string genero, int medico)
         {
-            string sql = "sp_insert_paciente  @nombre, @apellido, @correo, @contra, @telefono, @direccion, @edad, @genero";
+            string sql = "sp_insert_paciente  @nombre, @apellido, @correo, @contra, @telefono, @direccion, @edad, @genero, @medico";
             SqlParameter pamNombre = new SqlParameter("@nombre", nombre);
             SqlParameter pamApellido = new SqlParameter("@apellido", apellido);
             SqlParameter pamCorreo = new SqlParameter("@correo", correo);
@@ -219,7 +235,8 @@ namespace CentroMedico.Repositories
             SqlParameter pamDireccion = new SqlParameter("@direccion", direccion);
             SqlParameter pamEdad = new SqlParameter("@edad", edad);
             SqlParameter pamGenero = new SqlParameter("@genero", genero);
-            this.context.Database.ExecuteSqlRaw(sql, pamNombre, pamApellido, pamCorreo, pamContra, pamTelefono, pamDireccion, pamEdad, pamGenero);
+            SqlParameter pamMedico = new SqlParameter("@medico", medico);
+            this.context.Database.ExecuteSqlRaw(sql, pamNombre, pamApellido, pamCorreo, pamContra, pamTelefono, pamDireccion, pamEdad, pamGenero, pamMedico);
         }
 
         //Metodo para crear MEDICO
@@ -250,6 +267,36 @@ namespace CentroMedico.Repositories
             this.context.Usuarios.Add(usuario);
             this.context.SaveChanges();
         }
+
+        //Metodo para encontrar MEDICOS segun la especialidad y devolver de forma aleatoria un medico
+        public int GetIdMedico(int especialidad)
+        {
+            var consulta = from datos in this.context.MedicoEspecialidad
+                           where datos.Id_Especialidad == especialidad
+                           select datos.Id_Medico;
+            var medicoAleatorio = consulta.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+            return medicoAleatorio;
+        }
+
+        //Metodo para devolver la informacion de TU MEDICO
+        public MedicoDetallado GetMiMedico(int idPaciente)
+        {
+            // Define los parámetros
+            var idMedicoParametro = new SqlParameter("@idMedico", SqlDbType.Int);
+            idMedicoParametro.Direction = ParameterDirection.Output;
+
+            var idPacienteParametro = new SqlParameter("@idPaciente", idPaciente);
+
+            // Ejecuta el procedimiento almacenado
+            this.context.Database.ExecuteSqlRaw("EXEC SP_DETALLES_TUMEDICO @idPaciente, @idMedico OUTPUT", idPacienteParametro, idMedicoParametro);
+
+            // Obtiene el valor de @idMedico después de ejecutar el procedimiento almacenado
+            var idMedicoResultado = (int)idMedicoParametro.Value; //Da error si no tiene un medico asignado , ver si es necesario corregirlo
+
+            MedicoDetallado medico = this.FindMedicoDetallado(idMedicoResultado);
+            return medico;
+        }
+
 
         //Metodo para encontrar un PACIENTE
         public Paciente FindPaciente(int id)
@@ -417,6 +464,14 @@ namespace CentroMedico.Repositories
         public List<Usuario> GetUsuarios()
         {
             var consulta = from datos in this.context.Usuarios
+                           select datos;
+            return consulta.ToList();
+        }
+
+        //Metodo para obtener todas las citas
+        public List<Citas> GetAllCitas()
+        {
+            var consulta = from datos in this.context.Citas
                            select datos;
             return consulta.ToList();
         }

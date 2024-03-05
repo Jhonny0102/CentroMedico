@@ -9,6 +9,8 @@ namespace CentroMedico.Models
         [Key]
         [Column("ID")]
         public int Id { get; set; }
+        [Column("NOMBRE")]
+        public string Nombre { get; set; }
         [Column("APELLIDO")]
         public string Apellido { get; set; }
         [Column("CORREO")]
