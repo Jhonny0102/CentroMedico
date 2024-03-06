@@ -88,6 +88,14 @@ namespace CentroMedico.Controllers
         {
             int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
+            ViewData["NOMBREUSUARIO"] = usuario.Nombre;
+            return View();
+        }
+
+        public IActionResult ZonaAdminPerfil()
+        {
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            UsuarioDetallado usuario = this.repo.FindUsuarioDetallado(idUsuario);
             return View(usuario);
         }
 
@@ -254,10 +262,31 @@ namespace CentroMedico.Controllers
         /// Zona CRUD CITAS ///
         public IActionResult ZonaAdminCitas()
         {
-            List<Citas> citas = this.repo.GetAllCitas();
+            List<Cita> citas = this.repo.GetAllCitas();
             return View(citas);
         }
 
+        public IActionResult DetailsCita(int idCita)
+        {
+            Cita cita = this.repo.FindCita(idCita);
+            return View(cita);
+        }
+        public IActionResult DeleteCita(int idCita)
+        {
+            this.repo.DeleteCita(idCita);
+            return RedirectToAction("ZonaAdminCitas");
+        }
+        public IActionResult EditCita(int idCita)
+        {
+            Cita cita = this.repo.FindCita(idCita);
+            return View(cita);
+        }
+        [HttpPost]
+        public IActionResult EditCita(Cita cita)
+        {
+            this.repo.EditCita(cita.Id,cita.Fecha,cita.Hora,cita.EstadoCita,cita.Medico,cita.Comentario);
+            return RedirectToAction("ZonaAdminCitas");
+        }
 
 
 

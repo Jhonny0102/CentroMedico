@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CentroMedico.Models
 {
     [Table("CITAS")]
-    public class Citas
+    public class Cita
     {
         [Key]
         [Column("ID")]
@@ -17,6 +17,8 @@ namespace CentroMedico.Models
         public int EstadoCita { get; set; }
         [Column("ID_MEDICO")]
         public int Medico { get; set; }
+        [Column("ID_PACIENTE")]
+        public int Paciente { get; set; }
         [Column("COMENTARIO")]
         public string? Comentario { get; set; }
 

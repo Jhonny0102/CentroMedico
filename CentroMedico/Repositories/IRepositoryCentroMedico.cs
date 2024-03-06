@@ -24,12 +24,15 @@ namespace CentroMedico.Repositories
         public PacienteDetallado FindPacienteDetallado(int id);
         public DatosExtrasPacientes FindDatosExtrasPacientes(int id);
         public Medico FindMedico(int id);
-        public MedicoDetallado FindMedicoDetallado(int id);
+        public MedicoDetallado FindMedicoDetallado(int id); //Este metodo busca un medico de forma detallada
+        public MedicoDetallado GetMiMedico(int idPaciente); //Este metodo es para obtener los datos del medico asignado al paciente.
         public Usuario FindUsuario(int id);
         public UsuarioDetallado FindUsuarioDetallado(int id);
 
-        public List<Citas> GetAllCitas();
-        public MedicoDetallado GetMiMedico(int idPaciente);
+        public List<Cita> GetAllCitas();
+        public Cita FindCita(int idCita);
+        public void DeleteCita(int idCita);
+        public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idEstadoCita, int idMedico, string comentario);
     }
 
 }

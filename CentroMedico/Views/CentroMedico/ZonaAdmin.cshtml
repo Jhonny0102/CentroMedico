@@ -1,13 +1,17 @@
-﻿@model Usuario
-
-<h1>Bienvenido : @Model.Nombre</h1>
+﻿<h1>Bienvenido : @ViewData["NOMBREUSUARIO"]</h1>
 
 <h3>Opciones:</h3>
 <ul class="list-group">
+    <li class="list-group-item">
+        <a asp-controller="CentroMedico" asp-action="ZonaAdminPerfil">Perfil</a>
+    </li>
     <li class="list-group-item">
         <a asp-controller="CentroMedico" asp-action="ZonaAdminUsuarios">CRUD Usuarios</a>
     </li>
     <li class="list-group-item">
         <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas">CRUD Citas</a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas">Peticiones</a>
     </li>
 </ul>

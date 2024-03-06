@@ -6,9 +6,6 @@ using Microsoft.Data.SqlClient;
 using System.Diagnostics.Contracts;
 using System.Data;
 
-
-
-
 #region VISTAS
 
 //create view V_ALL_MEDICOS
@@ -79,6 +76,7 @@ using System.Data;
 //go
 
 #endregion
+
 #region PROCEDURES
 
 //create procedure sp_delete_paciente
@@ -469,12 +467,35 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para obtener todas las citas
-        public List<Citas> GetAllCitas()
+        public List<Cita> GetAllCitas()
         {
             var consulta = from datos in this.context.Citas
                            select datos;
             return consulta.ToList();
         }
 
+        //Metodo para encontrar una CITA
+        public Cita FindCita(int idCita)
+        {
+            return this.context.Citas.FirstOrDefault(z => z.Id == idCita);
+        }
+
+        public void DeleteCita(int idCita)
+        {
+            Cita cita = this.FindCita(idCita);
+            this.context.Remove(cita);
+            this.context.SaveChanges();
+        }
+
+        public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idEstadoCita, int idMedico, string comentario)
+        {
+            Cita cita = this.FindCita(idCita);
+            cita.Fecha = fecha;
+            cita.Hora = hora;
+            cita.EstadoCita = idEstadoCita;
+            cita.Medico = idMedico;
+            cita.Comentario = comentario;
+            this.context.SaveChanges();
+        }
     }
 }
