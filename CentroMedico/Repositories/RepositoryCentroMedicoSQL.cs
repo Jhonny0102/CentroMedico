@@ -200,6 +200,16 @@ using System.Data;
 //		select ID_MEDICO from MEDICOPACIENTE where ID_PACIENTE=@idPaciente
 //	)	
 //GO
+
+//CREATE PROCEDURE SP_IDS_MEDICOPACIENTE
+//(@idCita int , @idMedico int OUT , @idPaciente int OUT)
+//AS
+//	SELECT @idMedico = ID_MEDICO FROM CITAS WHERE ID=@idCita
+//	SELECT @idPaciente = ID_PACIENTE FROM CITAS WHERE ID=@idCita
+//GO
+
+
+
 #endregion
 
 namespace CentroMedico.Repositories
