@@ -1,9 +1,11 @@
-﻿<h1>Bienvenido : @ViewData["NOMBREUSUARIO"]</h1>
+﻿@model Usuario
+
+<h1>Bienvenido : @Model.Nombre</h1>
 
 <h3>Opciones:</h3>
 <ul class="list-group">
     <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="ZonaAdminPerfil">Perfil</a>
+        <a asp-controller="CentroMedico" asp-action="DetailsUsuario" asp-route-idUsuario="@Model.Id">Perfil</a>
     </li>
     <li class="list-group-item">
         <a asp-controller="CentroMedico" asp-action="ZonaAdminUsuarios">CRUD Usuarios</a>
@@ -12,6 +14,6 @@
         <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas">CRUD Citas</a>
     </li>
     <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas">Peticiones</a>
+        <a asp-controller="CentroMedico" asp-action="ZonaAdminPeticiones">Peticiones</a>
     </li>
 </ul>

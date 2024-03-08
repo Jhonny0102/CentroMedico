@@ -88,8 +88,7 @@ namespace CentroMedico.Controllers
         {
             int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
-            ViewData["NOMBREUSUARIO"] = usuario.Nombre;
-            return View();
+            return View(usuario);
         }
 
         public IActionResult ZonaAdminPerfil()
@@ -164,27 +163,57 @@ namespace CentroMedico.Controllers
         }
 
         //Controller que muestra los detalles de MEDICO
-        public IActionResult DetailsMedico()
+        public IActionResult DetailsMedico(int? idMedico)
         {
-            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
-            MedicoDetallado medico = this.repo.FindMedicoDetallado(id);
-            return View(medico);
+            //Si recibimos un idMedico(Este lo recibe de detailsCita ya que queremos mostrar la informacion del medico que esta asiganado a la cita)
+            //buscara el medico de forma detallada y devolvera su informacion
+            if (idMedico != null)
+            {
+                MedicoDetallado medico = this.repo.FindMedicoDetallado(idMedico.Value);
+                return View(medico); //Buscar la manera de redirigir automaticamente a la pagina anterior
+            }
+            else
+            {
+                int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
+                MedicoDetallado medico = this.repo.FindMedicoDetallado(id);
+                return View(medico);
+            }
+            
         }
 
         //Controller que muestra los detalles de USUARIO
-        public IActionResult DetailsUsuario()
+        public IActionResult DetailsUsuario(int? idUsuario)
         {
-            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
-            UsuarioDetallado usuario = this.repo.FindUsuarioDetallado(id);
-            return View(usuario);
+            if (idUsuario != null)
+            {
+                UsuarioDetallado usuario = this.repo.FindUsuarioDetallado(idUsuario.Value);
+                return View(usuario);
+            }
+            else
+            {
+                int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
+                UsuarioDetallado usuario = this.repo.FindUsuarioDetallado(id);
+                return View(usuario);
+            }
         }
 
         //Controller que muestra los detalles de PACIENTE (Si añadimos una ? seguido del tipo en el model puede aceptar nulos)
-        public IActionResult DetailsPaciente()
+        public IActionResult DetailsPaciente(int? idPaciente)
         {
-            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
-            PacienteDetallado paciente = this.repo.FindPacienteDetallado(id);
-            return View(paciente);
+            //Si recibimos un idPaciente(Este lo recibe de detailsCita ya que queremos mostrar la informacion del paciente que esta asiganado a la cita)
+            //buscara el paciente de forma detallada y devolvera su informacion
+            if (idPaciente != null)
+            {
+                PacienteDetallado paciente = this.repo.FindPacienteDetallado(idPaciente.Value);
+                return View(paciente); //Buscar la manera de redirigir automaticamente a la pagina anterior
+            }
+            else
+            {
+                int id = (int)HttpContext.Session.GetInt32("IDUSUARIOVER");
+                PacienteDetallado paciente = this.repo.FindPacienteDetallado(id);
+                return View(paciente);
+            }
+            
         }
 
         //Controller que elimina DIFERENTES TIPOS USUARIOS
@@ -214,11 +243,19 @@ namespace CentroMedico.Controllers
         }
 
         //Controller de editar USUARIO
-        public IActionResult EditUsuario()
+        public IActionResult EditUsuario(int? idUsuario)
         {
-            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
-            Usuario usuario = this.repo.FindUsuario(id);
-            return View(usuario);
+            if (idUsuario != null)
+            {
+                Usuario usuario = this.repo.FindUsuario(idUsuario.Value);
+                return View(usuario);
+            }
+            else
+            {
+                int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
+                Usuario usuario = this.repo.FindUsuario(id);
+                return View(usuario);
+            }
         }
         [HttpPost]
         public IActionResult EditUsuario(Usuario usuario)
@@ -228,12 +265,21 @@ namespace CentroMedico.Controllers
         }
 
         //Controller de editar MEDICO
-        public IActionResult EditMedico()
+        public IActionResult EditMedico(int? idMedico)
         {
-            int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
-            Medico medico = this.repo.FindMedico(id);
-            ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
-            return View(medico);
+            if (idMedico != null)
+            {
+                Medico medico = this.repo.FindMedico(idMedico.Value);
+                ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+                return View(medico);
+            }
+            else
+            {
+                int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
+                Medico medico = this.repo.FindMedico(id);
+                ViewData["ESPECIALIDADES"] = this.repo.GetEspecialidades();
+                return View(medico);
+            }
         }
         [HttpPost]
         public IActionResult EditMedico(Medico medico)
@@ -260,22 +306,43 @@ namespace CentroMedico.Controllers
         /// Fin Zona de CRUD USUARIOS ///
 
         /// Zona CRUD CITAS ///
+        
+        //Controller para mostrar todas las CITAS Detalladas 
         public IActionResult ZonaAdminCitas()
         {
-            List<Cita> citas = this.repo.GetAllCitas();
+            List<CitaDetallado> citas = this.repo.GetAllCitas();
             return View(citas);
         }
 
+        //Controller para mostrar los detalles de una CITA
         public IActionResult DetailsCita(int idCita)
         {
             Cita cita = this.repo.FindCita(idCita);
+            
+            //Guardamos el IDMEDICO
+            int idMedico = cita.Medico;
+            //Buscamos el usuarios con ese id y nos guardamos sus datos
+            Usuario medico = this.repo.FindUsuario(idMedico);
+            //Guardamos en el view data el nombre y apellido del medico
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            
+            //Guardamos el IDPACIENTE
+            int idPaciente = cita.Paciente;
+            //Buscamos el usuarios con ese id y nos guardamos sus datos
+            Usuario paciente = this.repo.FindUsuario(idPaciente);
+            //Guardamos en el view data el nombre y apellido del paciente
+            ViewData["NOMBREPACIENTE"] = paciente.Nombre + " " + paciente.Apellido;
             return View(cita);
         }
+
+        //Controller para eliminar una CITA
         public IActionResult DeleteCita(int idCita)
         {
             this.repo.DeleteCita(idCita);
             return RedirectToAction("ZonaAdminCitas");
         }
+
+        //Controller para editar una CITA
         public IActionResult EditCita(int idCita)
         {
             Cita cita = this.repo.FindCita(idCita);
@@ -287,12 +354,16 @@ namespace CentroMedico.Controllers
             this.repo.EditCita(cita.Id,cita.Fecha,cita.Hora,cita.EstadoCita,cita.Medico,cita.Comentario);
             return RedirectToAction("ZonaAdminCitas");
         }
-
-
-
-
-
         /// Fin Zona CRUD CITAS ///
+
+        /// Zona PETICIONES ///
+        
+        
+        
+        
+        
+        /// Fin PETICIONES///
+
 
         // Zona de RECEPCIONISTA ***.
         public IActionResult ZonaRecepcionista()
@@ -305,11 +376,20 @@ namespace CentroMedico.Controllers
 
 
         // Zona de MEDICO ***.
+        
+        //Los dos controllers de abajo devuelven lo mismo , solo que el primero guarda un model en la vista y usamos algunas propiedades
+        //El otro envia a la vista zonamedicaperfil y carga ahi los datos del medico
         public IActionResult ZonaMedico()
         {
             int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             return View(usuario);
+        }
+
+        public IActionResult MisPacientes(int idMedico)
+        {
+            List<MedicosPacientes> mispaciente = this.repo.MisPacientes(idMedico);
+            return View(mispaciente);
         }
 
 

@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
 using System.Diagnostics.Contracts;
 using System.Data;
+using Microsoft.VisualBasic;
+using System.ComponentModel;
 
 #region VISTAS
 
@@ -74,6 +76,24 @@ using System.Data;
 //	ON USUARIOS.ID_TIPOUSUARIO = TIPOUSUARIOS.ID
 //	WHERE USUARIOS.ID_TIPOUSUARIO = 1 OR USUARIOS.ID_TIPOUSUARIO = 2
 //go
+
+//CREATE VIEW V_CITAS_DETALLADO
+//AS
+//	SELECT CITAS.ID, CITAS.FECHA, CITAS.HORA, ESTADOCITA.ESTADO, USUARIOS.APELLIDO AS MEDICO, CITAS.COMENTARIO
+//	FROM CITAS
+//	INNER JOIN USUARIOS
+//	ON CITAS.ID_MEDICO = USUARIOS.ID
+//	INNER JOIN ESTADOCITA
+//	ON CITAS.ID_ESTADOCITA=ESTADOCITA.ID
+//GO
+
+//CREATE VIEW V_PACIENTESMEDICOS
+//AS
+//	SELECT ROW_NUMBER() OVER (ORDER BY APELLIDO) AS IDP , MEDICOPACIENTE.ID_MEDICO, USUARIOS.ID, USUARIOS.NOMBRE, USUARIOS.APELLIDO, USUARIOS.CORREO
+//	FROM MEDICOPACIENTE
+//	INNER JOIN USUARIOS 
+//	ON MEDICOPACIENTE.ID_PACIENTE=USUARIOS.ID
+//GO
 
 #endregion
 
@@ -201,15 +221,6 @@ using System.Data;
 //	)	
 //GO
 
-//CREATE PROCEDURE SP_IDS_MEDICOPACIENTE
-//(@idCita int , @idMedico int OUT , @idPaciente int OUT)
-//AS
-//	SELECT @idMedico = ID_MEDICO FROM CITAS WHERE ID=@idCita
-//	SELECT @idPaciente = ID_PACIENTE FROM CITAS WHERE ID=@idCita
-//GO
-
-
-
 #endregion
 
 namespace CentroMedico.Repositories
@@ -222,7 +233,6 @@ namespace CentroMedico.Repositories
             this.context = context;
         }
 
-        // 
         public Usuario GetLogin(string correo, string contra)
         {
             var consulta = from datos in this.context.Usuarios 
@@ -299,7 +309,7 @@ namespace CentroMedico.Repositories
             this.context.Database.ExecuteSqlRaw("EXEC SP_DETALLES_TUMEDICO @idPaciente, @idMedico OUTPUT", idPacienteParametro, idMedicoParametro);
 
             // Obtiene el valor de @idMedico después de ejecutar el procedimiento almacenado
-            var idMedicoResultado = (int)idMedicoParametro.Value; //Da error si no tiene un medico asignado , ver si es necesario corregirlo
+            var idMedicoResultado = (int)idMedicoParametro.Value;
 
             MedicoDetallado medico = this.FindMedicoDetallado(idMedicoResultado);
             return medico;
@@ -423,7 +433,7 @@ namespace CentroMedico.Repositories
             this.context.Database.ExecuteSqlRaw(sql, pamId,pamNombre,pamApellido,pamCorreo,pamContra,pamEspecialidad,pamEstado,pamTipo);
         }
 
-        //Metodo para editar un PACIENTE (*** Problema, si el paciente no tiene toda la informacion completa no lo actualiza)
+        //Metodo para editar un PACIENTE
         public void EditPaciente(int id, string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero, int estado, int tipo)
         {
             string sql = "sp_edit_paciente @id, @nombre, @apellido, @correo, @contra, @estado, @tipo, @telefono, @direccion, @edad, @genero";
@@ -477,9 +487,9 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para obtener todas las citas
-        public List<Cita> GetAllCitas()
+        public List<CitaDetallado> GetAllCitas()
         {
-            var consulta = from datos in this.context.Citas
+            var consulta = from datos in this.context.CitaDetallado
                            select datos;
             return consulta.ToList();
         }
@@ -490,6 +500,7 @@ namespace CentroMedico.Repositories
             return this.context.Citas.FirstOrDefault(z => z.Id == idCita);
         }
 
+        //Metodo para eliminar una CITA
         public void DeleteCita(int idCita)
         {
             Cita cita = this.FindCita(idCita);
@@ -497,6 +508,7 @@ namespace CentroMedico.Repositories
             this.context.SaveChanges();
         }
 
+        //Metodo para editar una CITA
         public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idEstadoCita, int idMedico, string comentario)
         {
             Cita cita = this.FindCita(idCita);
@@ -506,6 +518,15 @@ namespace CentroMedico.Repositories
             cita.Medico = idMedico;
             cita.Comentario = comentario;
             this.context.SaveChanges();
+        }
+
+        //
+        public List<MedicosPacientes> MisPacientes(int idMedico)
+        {
+            var consulta = from datos in this.context.MedicosPacientes
+                           where datos.Medico == idMedico
+                           select datos;
+            return consulta.ToList();
         }
     }
 }

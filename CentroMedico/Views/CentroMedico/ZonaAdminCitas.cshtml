@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CentroMedico.Models.Cita>
+﻿@model IEnumerable<CentroMedico.Models.CitaDetallado>
 
 @{
     ViewData["Title"] = "ZonaAdminCitas";
@@ -22,13 +22,10 @@
                 @Html.DisplayNameFor(model => model.Hora)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EstadoCita)
+                @Html.DisplayNameFor(model => model.Estado)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Medico)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Paciente)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comentario)
@@ -49,21 +46,18 @@
                 @Html.DisplayFor(modelItem => item.Hora)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EstadoCita)
+                @Html.DisplayFor(modelItem => item.Estado)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Medico)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Paciente)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Comentario)
             </td>
             <td>
-                <a asp-controller="CentroMedico" asp-action="DetailsCita" asp-route-idCita="@item.Id">Detalles</a>
-                <a asp-controller="CentroMedico" asp-action="EditCita" asp-route-idCita="@item.Id">Editar</a>
-                <a asp-controller="CentroMedico" asp-action="DeleteCita" asp-route-idCita="@item.Id">Eliminar</a>
+                    <a asp-controller="CentroMedico" asp-action="DetailsCita" asp-route-idCita="@item.Id">Detalles</a>
+                    <a asp-controller="CentroMedico" asp-action="EditCita" asp-route-idCita="@item.Id">Editar</a>
+                    <a asp-controller="CentroMedico" asp-action="DeleteCita" asp-route-idCita="@item.Id">Eliminar</a>
             </td>
         </tr>
 }

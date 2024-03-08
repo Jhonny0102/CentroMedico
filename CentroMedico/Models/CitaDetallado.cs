@@ -1,12 +1,10 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CentroMedico.Models
 {
-    [Table("CITAS")]
-    public class Cita
+    [Table("V_CITAS_DETALLADO")]
+    public class CitaDetallado
     {
         [Key]
         [Column("ID")]
@@ -15,12 +13,10 @@ namespace CentroMedico.Models
         public DateTime Fecha { get; set; }
         [Column("HORA")]
         public TimeSpan Hora { get; set; }
-        [Column("ID_ESTADOCITA")]
-        public int EstadoCita { get; set; }
-        [Column("ID_MEDICO")]
-        public int Medico { get; set; }
-        [Column("ID_PACIENTE")]
-        public int Paciente { get; set; }
+        [Column("ESTADO")]
+        public string Estado { get; set; }
+        [Column("MEDICO")]
+        public string Medico { get; set; }
         [Column("COMENTARIO")]
         public string? Comentario { get; set; }
 

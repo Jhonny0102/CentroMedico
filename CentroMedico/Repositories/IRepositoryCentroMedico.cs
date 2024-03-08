@@ -29,10 +29,11 @@ namespace CentroMedico.Repositories
         public Usuario FindUsuario(int id);
         public UsuarioDetallado FindUsuarioDetallado(int id);
 
-        public List<Cita> GetAllCitas();
+        public List<CitaDetallado> GetAllCitas();
         public Cita FindCita(int idCita);
         public void DeleteCita(int idCita);
         public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idEstadoCita, int idMedico, string comentario);
+        public List<MedicosPacientes> MisPacientes(int idMedico);
     }
 
 }
