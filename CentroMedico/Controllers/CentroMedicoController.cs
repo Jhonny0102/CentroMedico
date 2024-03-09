@@ -318,6 +318,10 @@ namespace CentroMedico.Controllers
         public IActionResult DetailsCita(int idCita)
         {
             Cita cita = this.repo.FindCita(idCita);
+
+            int idSeguimiento = cita.SeguimientoCita;
+            SeguimientoCita seguimiento = this.repo.GetSeguimientoCita(idSeguimiento);
+            ViewData["NOMBRESEGUIMIENTO"] = seguimiento.Estado;
             
             //Guardamos el IDMEDICO
             int idMedico = cita.Medico;
@@ -351,15 +355,30 @@ namespace CentroMedico.Controllers
         [HttpPost]
         public IActionResult EditCita(Cita cita)
         {
-            this.repo.EditCita(cita.Id,cita.Fecha,cita.Hora,cita.EstadoCita,cita.Medico,cita.Comentario);
+            this.repo.EditCita(cita.Id,cita.Fecha,cita.Hora,cita.SeguimientoCita,cita.Medico,cita.Comentario);
             return RedirectToAction("ZonaAdminCitas");
         }
         /// Fin Zona CRUD CITAS ///
 
         /// Zona PETICIONES ///
         
+        //Controller para mostrar PETICIONES DE FORMA DETALLADA
+        public IActionResult ZonaAdminPeticiones()
+        {
+            List<PeticionesDetallado> peticiones = this.repo.GetPeticionesDetallado();
+            return View(peticiones);
+        }
         
-        
+        public IActionResult OkPeticiones(int idPeticion, int idUsuario, int idEstadoNuevo)
+        {
+            this.repo.OkPetcion(idPeticion,idUsuario,idEstadoNuevo);
+            return RedirectToAction("ZonaAdminPeticiones");
+        }
+        public IActionResult OkNoPeticiones(int idPeticion)
+        {
+            this.repo.OkNoPeticion(idPeticion);
+            return RedirectToAction("ZonaAdminPeticiones");
+        }
         
         
         /// Fin PETICIONES///

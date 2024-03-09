@@ -15,8 +15,8 @@ namespace CentroMedico.Models
         public DateTime Fecha { get; set; }
         [Column("HORA")]
         public TimeSpan Hora { get; set; }
-        [Column("ID_ESTADOCITA")]
-        public int EstadoCita { get; set; }
+        [Column("ID_SEGUIMIENTOCITA")]
+        public int SeguimientoCita { get; set; }
         [Column("ID_MEDICO")]
         public int Medico { get; set; }
         [Column("ID_PACIENTE")]

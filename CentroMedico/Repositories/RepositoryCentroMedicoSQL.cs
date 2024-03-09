@@ -7,6 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Data;
 using Microsoft.VisualBasic;
 using System.ComponentModel;
+using System;
 
 #region VISTAS
 
@@ -79,12 +80,12 @@ using System.ComponentModel;
 
 //CREATE VIEW V_CITAS_DETALLADO
 //AS
-//	SELECT CITAS.ID, CITAS.FECHA, CITAS.HORA, ESTADOCITA.ESTADO, USUARIOS.APELLIDO AS MEDICO, CITAS.COMENTARIO
+//	SELECT CITAS.ID, CITAS.FECHA, CITAS.HORA, SEGUIMIENTOCITA.ESTADO, USUARIOS.APELLIDO AS MEDICO, CITAS.COMENTARIO
 //	FROM CITAS
 //	INNER JOIN USUARIOS
 //	ON CITAS.ID_MEDICO = USUARIOS.ID
-//	INNER JOIN ESTADOCITA
-//	ON CITAS.ID_ESTADOCITA=ESTADOCITA.ID
+//	INNER JOIN SEGUIMIENTOCITA
+//	ON CITAS.ID_SEGUIMIENTOCITA=SEGUIMIENTOCITA.ID
 //GO
 
 //CREATE VIEW V_PACIENTESMEDICOS
@@ -95,6 +96,14 @@ using System.ComponentModel;
 //	ON MEDICOPACIENTE.ID_PACIENTE=USUARIOS.ID
 //GO
 
+//CREATE VIEW V_DETAILS_PETICIONES
+//AS
+//	SELECT PETICIONESUSUARIOS.ID AS IDPETICION, PETICIONESUSUARIOS.ID_USUARIO_SOLICITANTE AS IDRECEPCIONISTA, USUARIOS.ID AS IDUSUARIO, USUARIOS.NOMBRE, USUARIOS.APELLIDO, ESTADOUSUARIO.ESTADO  FROM PETICIONESUSUARIOS
+//	INNER JOIN USUARIOS
+//	ON USUARIOS.ID = PETICIONESUSUARIOS.ID_USUARIO_MODIFICAR
+//	INNER JOIN ESTADOUSUARIO
+//	ON PETICIONESUSUARIOS.ID_ESTADO_NUEVO=ESTADOUSUARIO.ID
+//GO
 #endregion
 
 #region PROCEDURES
@@ -221,6 +230,24 @@ using System.ComponentModel;
 //	)	
 //GO
 
+//CREATE VIEW V_DETAILS_PETICIONES
+//AS
+//	SELECT 
+//	PETICIONESUSUARIOS.ID AS IDPETICION,
+//    PETICIONESUSUARIOS.ID_USUARIO_SOLICITANTE AS IDRECEPCIONISTA,
+//    PETICIONESUSUARIOS.ID_ESTADO_NUEVO AS NUEVOESTADO,
+//    USUARIOS.ID AS IDUSUARIO, USUARIOS.NOMBRE, USUARIOS.APELLIDO, ESTADOUSUARIO.ESTADO  FROM PETICIONESUSUARIOS
+//	INNER JOIN USUARIOS
+//	ON USUARIOS.ID = PETICIONESUSUARIOS.ID_USUARIO_MODIFICAR
+//	INNER JOIN ESTADOUSUARIO
+//	ON PETICIONESUSUARIOS.ID_ESTADO_NUEVO=ESTADOUSUARIO.ID
+//GO
+
+//CREATE PROCEDURE SP_OKNOPETICION_USUARIO
+//(@idPeticion int)
+//AS
+//	DELETE FROM PETICIONESUSUARIOS WHERE ID=@idPeticion;
+//GO
 #endregion
 
 namespace CentroMedico.Repositories
@@ -509,24 +536,59 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para editar una CITA
-        public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idEstadoCita, int idMedico, string comentario)
+        public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idSeguimientoCita, int idMedico, string comentario)
         {
             Cita cita = this.FindCita(idCita);
             cita.Fecha = fecha;
             cita.Hora = hora;
-            cita.EstadoCita = idEstadoCita;
+            cita.SeguimientoCita = idSeguimientoCita;
             cita.Medico = idMedico;
             cita.Comentario = comentario;
             this.context.SaveChanges();
         }
 
-        //
+        //Metodo para obtener los datos de la tabla SeguimientoCita
+        public SeguimientoCita GetSeguimientoCita(int idSeguimiento)
+        {
+            var consulta = from datos in this.context.SeguimientoCita
+                           where datos.Id == idSeguimiento
+                           select datos;
+            return consulta.FirstOrDefault();
+        }
+
+        //Metodo para obtener los pacientes de un MEDICO
         public List<MedicosPacientes> MisPacientes(int idMedico)
         {
             var consulta = from datos in this.context.MedicosPacientes
                            where datos.Medico == idMedico
                            select datos;
             return consulta.ToList();
+        }
+
+        //Metodo para obtener todas las PETICIONES de forma DETALLAD
+        public List<PeticionesDetallado> GetPeticionesDetallado()
+        {
+            var consulta = from datos in this.context.PeticionesDetallado
+                           select datos;
+            return consulta.ToList();
+        }
+
+        //Metodo para aceptar la PETICION
+        public void OkPetcion(int idPeticion , int idUsuario , int idEstadoNuevo)
+        {
+            string sql = "SP_OKPETICION_USUARIO @idPeticion, @idUsuario, @idEstadoUsuario";
+            SqlParameter pamIdPeticion = new SqlParameter("@idPeticion", idPeticion);
+            SqlParameter pamIdUsuario = new SqlParameter("@idUsuario", idUsuario);
+            SqlParameter pamIdEstadoNuevo = new SqlParameter("@idEstadoUsuario", idEstadoNuevo);
+            this.context.Database.ExecuteSqlRaw(sql, pamIdPeticion , pamIdUsuario, pamIdEstadoNuevo);
+        }
+
+        //Metodo para rechazar y eliminar la PETICION
+        public void OkNoPeticion(int idPeticion)
+        {
+            string sql = "SP_OKNOPETICION_USUARIO @idPeticion";
+            SqlParameter pamIdPeticion = new SqlParameter("@idPeticion", idPeticion);
+            this.context.Database.ExecuteSqlRaw(sql, pamIdPeticion);
         }
     }
 }

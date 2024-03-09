@@ -14,7 +14,7 @@ namespace CentroMedico.Models
         [Column("HORA")]
         public TimeSpan Hora { get; set; }
         [Column("ESTADO")]
-        public string Estado { get; set; }
+        public string SeguimientoCita { get; set; }
         [Column("MEDICO")]
         public string Medico { get; set; }
         [Column("COMENTARIO")]
