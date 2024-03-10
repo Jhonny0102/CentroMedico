@@ -104,6 +104,24 @@ using System;
 //	INNER JOIN ESTADOUSUARIO
 //	ON PETICIONESUSUARIOS.ID_ESTADO_NUEVO=ESTADOUSUARIO.ID
 //GO
+
+//CREATE VIEW V_DETAILS_PETICIONES_MEDICAMENTOS
+//AS
+//	SELECT 
+//	PETICIONESMEDICAMENTOS.ID AS IDPETICION, PETICIONESMEDICAMENTOS.ID_MEDICO AS IDMEDICO_SOLICITANTE ,
+//    PETICIONESMEDICAMENTOS.NOMBRE AS PETISMEDICAMENTO_NOMBRE, PETICIONESMEDICAMENTOS.DESCRIPCION AS PETISMEDICAMENTO_DESC,
+//    PETICIONESMEDICAMENTOS.ID_ESTADO_NUEVO AS PETISMEDICAMENTO_ESTADO,
+//    USUARIOS.NOMBRE AS NOMBREMEDICO, USUARIOS.APELLIDO APELLIDOMEDICO,
+//    MEDICAMENTOS.ID AS IDMEDICAMENTO, MEDICAMENTOS.NOMBRE,
+//    ESTADOUSUARIO.ESTADO
+//	FROM PETICIONESMEDICAMENTOS
+//	INNER JOIN USUARIOS
+//	ON PETICIONESMEDICAMENTOS.ID_MEDICO=USUARIOS.ID
+//	LEFT JOIN MEDICAMENTOS
+//	ON PETICIONESMEDICAMENTOS.ID_MEDICAMENTO=MEDICAMENTOS.ID
+//	INNER JOIN ESTADOUSUARIO
+//	ON PETICIONESMEDICAMENTOS.ID_ESTADO_NUEVO=ESTADOUSUARIO.ID
+//GO
 #endregion
 
 #region PROCEDURES
@@ -247,6 +265,32 @@ using System;
 //(@idPeticion int)
 //AS
 //	DELETE FROM PETICIONESUSUARIOS WHERE ID=@idPeticion;
+//GO
+
+//--Puede haber dos opciones al dar de alta un medicamento:
+//--Con ID, que solo cambiaria de estado de 2(baja) a 1(alta)
+//CREATE PROCEDURE SP_OKPETI_MEDICAMENTO_CON_ID
+//(@idPeti int, @idMedicamento int, @idEstado_Nuevo int)
+//AS
+//	UPDATE MEDICAMENTOS SET ID_ESTADO=@idEstado_Nuevo WHERE ID=@idMedicamento;
+//DELETE FROM PETICIONESMEDICAMENTOS WHERE ID=@idPeti;
+//GO
+
+//-- Sin ID, que seria de crear un nuevo medicamento , tendremos que generar un ID para ese medicamento y añadir
+//-- sus propiedades (Nombre, Descripcion y estado)
+//CREATE PROCEDURE SP_OKPETI_MEDICAMENTO_SIN_ID
+//(@idPeti int, @nombreMed nvarchar(50), @descMed nvarchar(50), @idEstado_Nuevo int)
+//AS
+//	DECLARE @idMax int;
+//SELECT @idMax = MAX(ID) + 1 FROM MEDICAMENTOS
+//	INSERT INTO MEDICAMENTOS (ID, NOMBRE, DESCRIPCION, ID_ESTADO) VALUES (@idMax, @nombreMed, @descMed, @idEstado_Nuevo)
+//	DELETE FROM PETICIONESMEDICAMENTOS WHERE ID=@idPeti;
+//GO
+
+//CREATE PROCEDURE SP_OKNOPETI_MEDICAMENTO
+//(@idPeti int)
+//AS
+//	DELETE FROM PETICIONESMEDICAMENTOS WHERE ID=@idPeti;
 //GO
 #endregion
 
@@ -565,7 +609,7 @@ namespace CentroMedico.Repositories
             return consulta.ToList();
         }
 
-        //Metodo para obtener todas las PETICIONES de forma DETALLAD
+        //Metodo para obtener todas las PETICIONES de forma DETALLADO       
         public List<PeticionesDetallado> GetPeticionesDetallado()
         {
             var consulta = from datos in this.context.PeticionesDetallado
@@ -573,7 +617,7 @@ namespace CentroMedico.Repositories
             return consulta.ToList();
         }
 
-        //Metodo para aceptar la PETICION
+        //Metodo para aceptar la PETICION USUARIOS
         public void OkPetcion(int idPeticion , int idUsuario , int idEstadoNuevo)
         {
             string sql = "SP_OKPETICION_USUARIO @idPeticion, @idUsuario, @idEstadoUsuario";
@@ -583,12 +627,50 @@ namespace CentroMedico.Repositories
             this.context.Database.ExecuteSqlRaw(sql, pamIdPeticion , pamIdUsuario, pamIdEstadoNuevo);
         }
 
-        //Metodo para rechazar y eliminar la PETICION
+        //Metodo para rechazar y eliminar la PETICION USUARIOS
         public void OkNoPeticion(int idPeticion)
         {
             string sql = "SP_OKNOPETICION_USUARIO @idPeticion";
             SqlParameter pamIdPeticion = new SqlParameter("@idPeticion", idPeticion);
             this.context.Database.ExecuteSqlRaw(sql, pamIdPeticion);
+        }
+
+        //Metodo para listar todas las peticiones de MEDICAMENTOS DETALLADAS
+        public List<PeticionesMedicamentoDetallado> GetPeticionesMedicametentosDetallado()
+        {
+            return this.context.PeticionesMedicamentoDetallado.ToList();
+        }
+
+        //Metodo para aceptar las peticiones de MEDICAMENTOS, dependiendo de si es solo actualizar(Con ID) o crearla(Sin ID)
+        public void OkPeticionMedicamento(int idPeti, int? idMedicamento, string nombre, string? descripcion, int estado)
+        {
+            //Si recibe un ID
+            if (idMedicamento != null)
+            {
+                string sql = "SP_OKPETI_MEDICAMENTO_CON_ID @idPeti , @idMedicamento, @idEstado_Nuevo";
+                SqlParameter pamIdPeti = new SqlParameter("@idPeti", idPeti);
+                SqlParameter pamIdMedicamento = new SqlParameter("@idMedicamento", idMedicamento);
+                SqlParameter pamIdEstado = new SqlParameter("@idEstado_Nuevo", estado);
+                this.context.Database.ExecuteSqlRaw(sql, pamIdPeti, pamIdMedicamento, pamIdEstado);
+            }
+            //Sino recibe un ID
+            else
+            {
+                string sql = "SP_OKPETI_MEDICAMENTO_SIN_ID @idpeti, @nombreMed , @descMed , @idEstado_Nuevo";
+                SqlParameter pamIdPeti = new SqlParameter("@idPeti", idPeti);
+                SqlParameter pamNombre = new SqlParameter("@nombreMed", nombre);
+                SqlParameter pamDescripcion = new SqlParameter("@descMed", descripcion);
+                SqlParameter pamIdEstado = new SqlParameter("@idEstado_Nuevo", estado);
+                this.context.Database.ExecuteSqlRaw(sql, pamIdPeti , pamNombre , pamDescripcion ,pamIdEstado);
+            }
+        }
+
+        //Metodo para recharzar una peticion de MEDICAMENTOS
+        public void OkNoPeticionMedicamento(int idPeti)
+        {
+            string sql = "SP_OKNOPETI_MEDICAMENTO @idPeti";
+            SqlParameter pamIdPeti = new SqlParameter("@idPeti", idPeti);
+            this.context.Database.ExecuteSqlRaw(sql, pamIdPeti);
         }
     }
 }

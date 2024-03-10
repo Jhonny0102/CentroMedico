@@ -1,0 +1,23 @@
+﻿@model List<PeticionesMedicamentoDetallado>
+
+<h1>Peticiones Medicamentos</h1>
+
+<p>
+    <a asp-controller="CentroMedico" asp-action="ZonaAdmin" class="btn btn-info">Back</a>
+</p>
+
+<ul class="list-group">
+    @foreach (PeticionesMedicamentoDetallado petis in Model)
+    {
+        <li class="list-group-item">
+            <h5>
+                El medico @petis.NombreMedico @petis.ApellidoMedico con ID: @petis.IdMedico_Solicitante quiere dar de @petis.Estado el medicamento @petis.NombreMedicamento @petis.PetisMedicamentoNombre
+                <a asp-action="OkPeticionMedicamento" asp-controller="CentroMedico" asp-route-idPeti="@petis.IdPeticion"
+                asp-route-idMedicamento="@petis.IdMedicamento" asp-route-nombre="@petis.NombreMedicamento@petis.PetisMedicamentoNombre"
+                asp-route-descripcion="@petis.PetisMedicamentoDesc" asp-route-estado="@petis.PetisMedicamentoEstado"
+                class="btn btn-success">Si</a>
+                <a asp-action="OkNoPeticionMedicamento" asp-controller="CentroMedico" asp-route-idPeti="@petis.IdPeticion" class="btn btn-warning">No</a>
+            </h5>
+        </li>
+    }
+</ul>

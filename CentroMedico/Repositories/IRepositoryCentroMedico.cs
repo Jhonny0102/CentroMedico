@@ -37,6 +37,10 @@ namespace CentroMedico.Repositories
         public List<PeticionesDetallado> GetPeticionesDetallado();
         public void OkPetcion(int idPeticion, int idUsuario, int idEstadoNuevo);
         public void OkNoPeticion(int idPeticion);
+        public List<PeticionesMedicamentoDetallado> GetPeticionesMedicametentosDetallado();
+
+        public void OkPeticionMedicamento(int idPeti, int? idMedicamento ,string nombre , string? descripcion , int estado);
+        public void OkNoPeticionMedicamento(int idPeti);
     }
 
 }

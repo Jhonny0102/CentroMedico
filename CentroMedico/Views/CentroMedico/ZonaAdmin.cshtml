@@ -13,7 +13,13 @@
     <li class="list-group-item">
         <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas">CRUD Citas</a>
     </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="ZonaAdminPeticiones">Peticiones</a>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Peticiones
+        </a>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="ZonaAdminPeticiones">Peticiones Usuarios</a></li>
+            <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="ZonaAdminPeticionesMedicamentos">Peticiones Medicamentos</a></li>
+        </ul>
     </li>
 </ul>

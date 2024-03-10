@@ -380,6 +380,22 @@ namespace CentroMedico.Controllers
             return RedirectToAction("ZonaAdminPeticiones");
         }
         
+        public IActionResult ZonaAdminPeticionesMedicamentos()
+        {
+            List<PeticionesMedicamentoDetallado> petisMedicamentos = this.repo.GetPeticionesMedicametentosDetallado();
+            return View(petisMedicamentos);
+        }
+
+        public IActionResult OkPeticionMedicamento(int idPeti , int? idMedicamento, string nombre, string? descripcion, int estado)
+        {
+            this.repo.OkPeticionMedicamento(idPeti, idMedicamento,nombre,descripcion,estado);
+            return RedirectToAction("ZonaAdminPeticionesMedicamentos");
+        }
+        public IActionResult OkNoPeticionMedicamento(int idPeti)
+        {
+            this.repo.OkNoPeticionMedicamento(idPeti);
+            return RedirectToAction("ZonaAdminPeticionesMedicamentos");
+        }
         
         /// Fin PETICIONES///
 
