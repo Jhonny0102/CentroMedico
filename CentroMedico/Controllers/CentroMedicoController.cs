@@ -427,6 +427,10 @@ namespace CentroMedico.Controllers
             return View(mispaciente);
         }
 
+        public IActionResult CreatePeticionesMedicamentos()
+        {
+            return View();
+        }
 
 
         // Zona de PACIENTES ***.

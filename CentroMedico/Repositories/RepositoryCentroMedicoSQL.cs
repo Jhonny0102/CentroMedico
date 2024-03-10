@@ -292,6 +292,22 @@ using System;
 //AS
 //	DELETE FROM PETICIONESMEDICAMENTOS WHERE ID=@idPeti;
 //GO
+
+//CREATE PROCEDURE SP_CREATEPETIMEDIC_CONID
+//(@idMedico int , @idMedicamento int , @idEstadoMedicamento int)
+//AS
+//	DECLARE @idMax int
+//	SELECT @idMax = MAX(ID) from PETICIONESMEDICAMENTOS
+//	INSERT INTO PETICIONESMEDICAMENTOS (ID, ID_MEDICO, ID_MEDICAMENTO, ID_ESTADO_NUEVO) VALUES (@idMax, @idMedico, @idMedicamento, @idEstadoMedicamento)
+//GO
+
+//CREATE PROCEDURE SP_CREATEPETIMEDIC_SINID
+//(@idMedico int , @nombreMedicamento nvarchar(50) , @descMedicamento nvarchar(50) , @idEstadoMedicamento int)
+//AS
+//	DECLARE @idMax int
+//	SELECT @idMax = MAX(ID) from PETICIONESMEDICAMENTOS
+//	INSERT INTO PETICIONESMEDICAMENTOS (ID, ID_MEDICO, NOMBRE, DESCRIPCION, ID_ESTADO_NUEVO) VALUES (@idMax, @idMedico, @nombreMedicamento, @descMedicamento, @idEstadoMedicamento)
+//GO
 #endregion
 
 namespace CentroMedico.Repositories
@@ -671,6 +687,29 @@ namespace CentroMedico.Repositories
             string sql = "SP_OKNOPETI_MEDICAMENTO @idPeti";
             SqlParameter pamIdPeti = new SqlParameter("@idPeti", idPeti);
             this.context.Database.ExecuteSqlRaw(sql, pamIdPeti);
+        }
+
+        // *** Un formulario que me permita ver los medicamentos en estado de alta o baja (Formulario Peticion Medicamentos con ID)
+
+        //Metodo para create una peticion con id(Solo acatualizara el estado del medicamento)
+        public void CreatePeticionMedicamentoConId(int idMedico, int idMedicamento , int estadoMedicamento)
+        {
+            string sql = "SP_CREATEPETIMEDIC_CONID @idMedico , @idMedicamento , @idEstadoMedicamento";
+            SqlParameter pamIdMedico = new SqlParameter("@idMedico", idMedico);
+            SqlParameter pamIdMedicamento = new SqlParameter("@idMedicamento", idMedicamento);
+            SqlParameter pamIdEstadoMedicamento = new SqlParameter("@idEstadoMedicamento", estadoMedicamento);
+            this.context.Database.ExecuteSqlRaw(sql, pamIdMedico, pamIdMedicamento, pamIdEstadoMedicamento);
+        }
+
+        //Metodo para crear una peticion sin id(Solicitara un nuevo medicamento donde tendremos que insertar los datos)
+        public void CreatePeticionMedicamentoSinId(int idMedico, string nombreMedicamento, string descripcionMedicamento , int estadoMedicamento)
+        {
+            string sql = "SP_CREATEPETIMEDIC_SINID @idMedico , @nombreMedicamento , @descMedicamento , @idEstadoMedicamento";
+            SqlParameter pamIdMedico = new SqlParameter("@idMedico", idMedico);
+            SqlParameter pamNombreMed = new SqlParameter("@nombreMedicamento", nombreMedicamento);
+            SqlParameter pamDescMedicamento = new SqlParameter("@descMedicamento", descripcionMedicamento);
+            SqlParameter pamEstadoMedicamento = new SqlParameter("@idEstadoMedicamento", estadoMedicamento);
+            this.context.Database.ExecuteSqlRaw(sql, pamIdMedico, pamNombreMed ,pamDescMedicamento, pamEstadoMedicamento);
         }
     }
 }
