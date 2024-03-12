@@ -369,28 +369,35 @@ namespace CentroMedico.Controllers
             return View(peticiones);
         }
         
+        //Controller que nos permite aceptar una peticion de USUARIOS
         public IActionResult OkPeticiones(int idPeticion, int idUsuario, int idEstadoNuevo)
         {
             this.repo.OkPetcion(idPeticion,idUsuario,idEstadoNuevo);
             return RedirectToAction("ZonaAdminPeticiones");
         }
+
+        //Controller que nos permite denegar una peticion de USUARIOS
         public IActionResult OkNoPeticiones(int idPeticion)
         {
             this.repo.OkNoPeticion(idPeticion);
             return RedirectToAction("ZonaAdminPeticiones");
         }
         
+        //Controller que nos devuelve una lista de Peticion de Medicamentos
         public IActionResult ZonaAdminPeticionesMedicamentos()
         {
             List<PeticionesMedicamentoDetallado> petisMedicamentos = this.repo.GetPeticionesMedicametentosDetallado();
             return View(petisMedicamentos);
         }
 
+        //Controller que nos permite aceptar una peticion de MEDICAMENTOS
         public IActionResult OkPeticionMedicamento(int idPeti , int? idMedicamento, string nombre, string? descripcion, int estado)
         {
             this.repo.OkPeticionMedicamento(idPeti, idMedicamento,nombre,descripcion,estado);
             return RedirectToAction("ZonaAdminPeticionesMedicamentos");
         }
+
+        //Controller que nos permite denegar una peticion de MEDICAMENTOS
         public IActionResult OkNoPeticionMedicamento(int idPeti)
         {
             this.repo.OkNoPeticionMedicamento(idPeti);
@@ -418,20 +425,63 @@ namespace CentroMedico.Controllers
         {
             int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
             Usuario usuario = this.repo.FindUsuario(idUsuario);
+            HttpContext.Session.SetString("NOMBREMEDICOGUARDAR", usuario.Nombre+" "+usuario.Apellido);
             return View(usuario);
         }
 
+        //Controller que nos permite obtener todos los pacientes de una medico
         public IActionResult MisPacientes(int idMedico)
         {
             List<MedicosPacientes> mispaciente = this.repo.MisPacientes(idMedico);
             return View(mispaciente);
         }
 
-        public IActionResult CreatePeticionesMedicamentos()
+        //Controller que nos permite crear una peticion (ALTA DE MEDICAMENTO) 
+        public IActionResult CreatePeticionSinIdMedico(int idMedico)
         {
+            ViewData["NOMBREMEDICO"] = HttpContext.Session.GetString("NOMBREMEDICOGUARDAR");
+            ViewData["IDMEDICO"] = idMedico;
             return View();
         }
+        [HttpPost]
+        public IActionResult CreatePeticionSinIdMedico(int idMedico, string nombreMedicamento, string descMedicamento)
+        {
+            this.repo.CreatePeticionMedicamentoSinId(idMedico, nombreMedicamento, descMedicamento);
+            ViewData["NOMBREMEDICO"] = HttpContext.Session.GetString("NOMBREMEDICOGUARDAR");
+            return RedirectToAction("ZonaMedico");
+        }
 
+        //Controller que nos permite crear una peticion(ACTUALIZACION DE UN MEDICAMENTO)
+        public IActionResult CreatePeticionConIdMedico(int idMedico)
+        {
+            List<Medicamentos> medicamentos = this.repo.GetMedicamentos();
+            ViewData["ESTADOS"] = this.repo.GetEstados();
+            ViewData["NOMBREMEDICO"] = HttpContext.Session.GetString("NOMBREMEDICOGUARDAR");
+            ViewData["IDMEDICO"] = idMedico;
+            return View(medicamentos);
+        }
+        [HttpPost]
+        public IActionResult CreatePeticionConIdMedico(int idMedico, int idMedicamento, int estadoMedicamento)
+        {
+            ViewData["NOMBREMEDICO"] = HttpContext.Session.GetString("NOMBREMEDICOGUARDAR");
+            ViewData["IDMEDICO"] = idMedico;
+            List<Medicamentos> medicamentos = this.repo.GetMedicamentos();
+            ViewData["ESTADOS"] = this.repo.GetEstados();
+
+            Medicamentos medicamento = this.repo.FindMedicamento(idMedicamento);
+            string nombreEstado = this.repo.FindNombreEstado(estadoMedicamento);
+            if (medicamento.Id_Estado == estadoMedicamento)
+            {
+                ViewData["MENSAJEMEDICAMENTO"] = "El medicamento " + medicamento.Nombre  + " ya esta de " + nombreEstado;
+                return View(medicamentos);
+            }
+            else
+            {
+                this.repo.CreatePeticionMedicamentoConId(idMedico,idMedicamento,estadoMedicamento);
+                return RedirectToAction("ZonaMedico");
+            }
+            
+        }
 
         // Zona de PACIENTES ***.
         public IActionResult ZonaPaciente()

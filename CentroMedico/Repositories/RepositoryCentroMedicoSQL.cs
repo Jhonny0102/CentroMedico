@@ -297,7 +297,7 @@ using System;
 //(@idMedico int , @idMedicamento int , @idEstadoMedicamento int)
 //AS
 //	DECLARE @idMax int
-//	SELECT @idMax = MAX(ID) from PETICIONESMEDICAMENTOS
+//	SELECT @idMax = MAX(ID) + 1 from PETICIONESMEDICAMENTOS
 //	INSERT INTO PETICIONESMEDICAMENTOS (ID, ID_MEDICO, ID_MEDICAMENTO, ID_ESTADO_NUEVO) VALUES (@idMax, @idMedico, @idMedicamento, @idEstadoMedicamento)
 //GO
 
@@ -305,7 +305,7 @@ using System;
 //(@idMedico int , @nombreMedicamento nvarchar(50) , @descMedicamento nvarchar(50) , @idEstadoMedicamento int)
 //AS
 //	DECLARE @idMax int
-//	SELECT @idMax = MAX(ID) from PETICIONESMEDICAMENTOS
+//	SELECT @idMax = MAX(ID) + 1 from PETICIONESMEDICAMENTOS
 //	INSERT INTO PETICIONESMEDICAMENTOS (ID, ID_MEDICO, NOMBRE, DESCRIPCION, ID_ESTADO_NUEVO) VALUES (@idMax, @idMedico, @nombreMedicamento, @descMedicamento, @idEstadoMedicamento)
 //GO
 #endregion
@@ -702,14 +702,45 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para crear una peticion sin id(Solicitara un nuevo medicamento donde tendremos que insertar los datos)
-        public void CreatePeticionMedicamentoSinId(int idMedico, string nombreMedicamento, string descripcionMedicamento , int estadoMedicamento)
+        public void CreatePeticionMedicamentoSinId(int idMedico, string nombreMedicamento, string descripcionMedicamento)
         {
             string sql = "SP_CREATEPETIMEDIC_SINID @idMedico , @nombreMedicamento , @descMedicamento , @idEstadoMedicamento";
             SqlParameter pamIdMedico = new SqlParameter("@idMedico", idMedico);
             SqlParameter pamNombreMed = new SqlParameter("@nombreMedicamento", nombreMedicamento);
             SqlParameter pamDescMedicamento = new SqlParameter("@descMedicamento", descripcionMedicamento);
-            SqlParameter pamEstadoMedicamento = new SqlParameter("@idEstadoMedicamento", estadoMedicamento);
+            SqlParameter pamEstadoMedicamento = new SqlParameter("@idEstadoMedicamento", 1);
             this.context.Database.ExecuteSqlRaw(sql, pamIdMedico, pamNombreMed ,pamDescMedicamento, pamEstadoMedicamento);
+        }
+
+        //Metodo para devolver los datos de los medicamentos
+        public List<Medicamentos> GetMedicamentos()
+        {
+            var consulta = from datos in this.context.Medicamentos
+                           select datos;
+            return consulta.ToList();
+        }
+
+        //Metodo para buscar Medicamentos por ID
+        public Medicamentos FindMedicamento(int idMedicamento)
+        {
+            var consulta = from datos in this.context.Medicamentos
+                           where datos.Id == idMedicamento
+                           select datos;
+            return consulta.FirstOrDefault();
+        }
+
+        //Metodo para devolver todos los tipos de estado
+        public List<Estados> GetEstados()
+        {
+            return context.Estados.ToList();
+        }
+
+        public string FindNombreEstado(int idEstado)
+        {
+            var consulta = from datos in this.context.Estados
+                           where datos.Id == idEstado
+                           select datos.Estado;
+            return consulta.FirstOrDefault();
         }
     }
 }

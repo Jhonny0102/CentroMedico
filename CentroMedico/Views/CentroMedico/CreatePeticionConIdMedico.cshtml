@@ -1,0 +1,44 @@
+﻿@model List<Medicamentos>
+
+@{
+    int idMedico = 0;
+    string nombreMedico = "";
+    if (ViewData["NOMBREMEDICO"] != null)
+    {
+        nombreMedico = ViewData["NOMBREMEDICO"].ToString();
+        idMedico = (int)ViewData["IDMEDICO"];
+    }
+    List<Estados> estados = ViewData["ESTADOS"] as List<Estados>;
+}
+
+<h1>Create Peticion Medicamentos con ID</h1>
+
+<p>
+    <a asp-action="ZonaMedico" class="btn btn-outline-info">Back</a>
+</p>
+
+<form method="post">
+    <label>Medico Solicitante:</label>
+    <input type="text" name="nombreMedico" class="form-control" placeholder="@nombreMedico" />
+    <input type="text" name="idMedico" class="form-control" value="@idMedico" hidden />
+    <label>Seleccione un medicamento: </label>
+    <select name="idMedicamento" class="form-select">
+        @foreach (Medicamentos medic in Model)
+        {
+            <option value="@medic.Id">@medic.Nombre</option>
+        }
+    </select>
+    <h3 style="color:red">
+        @ViewData["MENSAJEMEDICAMENTO"]
+    </h3>
+    <label>Seleccione Estado: </label>
+    <select name="estadoMedicamento" class="form-select">
+        @foreach (Estados estado in estados)
+        {
+            <option value="@estado.Id">@estado.Estado</option>
+        }
+    </select>
+    <button class="btn btn-success">
+        Enviar Peticion
+    </button>
+</form>

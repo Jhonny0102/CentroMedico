@@ -25,5 +25,7 @@ namespace CentroMedico.Data
         public DbSet<SeguimientoCita> SeguimientoCita { get; set; }
         public DbSet<PeticionesDetallado> PeticionesDetallado { get; set; }
         public DbSet<PeticionesMedicamentoDetallado> PeticionesMedicamentoDetallado { get; set; }
+        public DbSet<Medicamentos> Medicamentos { get; set; }
+        public DbSet<Estados> Estados { get; set; }
     }
 }

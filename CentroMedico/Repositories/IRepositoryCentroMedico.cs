@@ -42,7 +42,11 @@ namespace CentroMedico.Repositories
         public void OkPeticionMedicamento(int idPeti, int? idMedicamento ,string nombre , string? descripcion , int estado);
         public void OkNoPeticionMedicamento(int idPeti);
         public void CreatePeticionMedicamentoConId(int idMedico, int idMedicamento, int estadoMedicamento);
-        public void CreatePeticionMedicamentoSinId(int idMedico, string nombreMedicamento, string descripcionMedicamento, int estadoMedicamento);
+        public void CreatePeticionMedicamentoSinId(int idMedico, string nombreMedicamento, string descripcionMedicamento);
+        public List<Medicamentos> GetMedicamentos();
+        public Medicamentos FindMedicamento(int idMedicamento);
+        public List<Estados> GetEstados();
+        public string FindNombreEstado(int idEstado);
     }
 
 }

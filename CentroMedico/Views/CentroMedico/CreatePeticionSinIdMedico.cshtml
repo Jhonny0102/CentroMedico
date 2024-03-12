@@ -1,0 +1,29 @@
+﻿@{
+    int idMedico = (int)ViewData["IDMEDICO"];
+    string nombreMedico = "";
+    if (ViewData["NOMBREMEDICO"] != null)
+    {
+        nombreMedico = ViewData["NOMBREMEDICO"].ToString();
+    }
+}
+
+<h1>
+    Formulario Nuevo Medicamento
+</h1>
+
+<p>
+    <a asp-action="ZonaMedico" class="btn btn-outline-info">Back</a>
+</p>
+
+<form method="post">
+    <label>Medico Solicitante:</label>
+    <input type="text" name="nombreMedico" class="form-control" placeholder="@nombreMedico" />
+    <input type="text" name="idMedico" class="form-control" value="@idMedico" hidden/>
+    <label>Nombre Medicamento: </label>
+    <input type="text" name="nombreMedicamento" class="form-control" />
+    <label>Descripcion Medicamento: </label>
+    <input type="text" name="descMedicamento" class="form-control" />
+    <button class="btn btn-success">
+        Enviar Peticion
+    </button>
+</form>
