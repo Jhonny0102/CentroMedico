@@ -47,6 +47,12 @@ namespace CentroMedico.Repositories
         public Medicamentos FindMedicamento(int idMedicamento);
         public List<Estados> GetEstados();
         public string FindNombreEstado(int idEstado);
+
+        public void CreateCitaPaciente(DateTime fecha, TimeSpan hora, int idmedico, int idpaciente);
+        public int FindCitaDispo(int idmedico, int idpaciente, DateTime fecha, TimeSpan hora);
+        public List<CitaDetalladaMedicos> GetCitasDetalladasMedico(int idmedico);
+        public List<CitaDetalladaMedicos> FindCitasDetalladasMedicos(int idmedico, DateTime fecha);
+        public List<SeguimientoCita> GetAllSeguimientoCita();
     }
 
 }

@@ -1,0 +1,29 @@
+﻿@model CitaDetalladaMedicos
+@{
+    List<SeguimientoCita> seguimiento = ViewData["ESTADOSEGUIMIENTO"] as List<SeguimientoCita>;
+}
+
+
+<h1>Cita Medica Final con Paciente : @Model.NombrePaciente</h1>
+
+<form method="post">
+    <input type="number" name="idcita" value="@Model.Id" hidden/>
+    <label>Nombre Paciente: </label>
+    <input type="text" placeholder="@Model.NombrePaciente  @Model.ApellidoPaciente" class="form-control"/>
+    <label>Fecha Cita: </label>
+    <input type="text" placeholder="@Model.Fecha" class="form-control" />
+    <label>Hora Cita: </label>
+    <input type="text" placeholder="@Model.Hora" class="form-control" />
+    <label>Comentario: </label>
+    <input type="text" name="comentario" class="form-control"/>
+    <label>Estado Cita: </label>
+    <select name="seguimiento" class="form-select">
+        @foreach (SeguimientoCita seguis in seguimiento)
+        {
+            <option value="@seguis.Id">@seguis.Estado</option>
+        }
+    </select>
+    <button class="btn btn-outline-success">
+        Finalizar Cita
+    </button>
+</form>

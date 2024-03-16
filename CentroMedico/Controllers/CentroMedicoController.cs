@@ -74,7 +74,7 @@ namespace CentroMedico.Controllers
             }
             else
             {
-                ViewData["mensaje"] = "Datos Erroneos, vuelve a intentarlo";
+                ViewData["mensaje"] = "Datos Erroneos o Usuario de Baja, vuelve a intentarlo";
                 return View();
             }
         }
@@ -483,6 +483,47 @@ namespace CentroMedico.Controllers
             
         }
 
+        //Controller para Mostrar y Buscar citas de un medico
+        public IActionResult MisCitasMedico()
+        {
+            int idMedico = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            List<CitaDetalladaMedicos> misCitas = this.repo.GetCitasDetalladasMedico(idMedico);
+            return View(misCitas);
+        }
+        [HttpPost]
+        public IActionResult MisCitasMedico(DateTime fecha)
+        {
+            int idMedico = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            List<CitaDetalladaMedicos> misCitasFiltrados = this.repo.FindCitasDetalladasMedicos(idMedico,fecha);
+            if (misCitasFiltrados != null)
+            {
+                return View(misCitasFiltrados);
+            }
+            else
+            {
+                ViewData["MENSAJE"] = "Aun no tienes Citas con Paciente";
+                return View();
+            }
+            
+        }
+
+        //Controller para actualizar una CITA MEDICA
+        public IActionResult CitaMedicaFinal(int idcita)
+        {
+            ViewData["ESTADOSEGUIMIENTO"] = this.repo.GetAllSeguimientoCita();
+            CitaDetalladaMedicos citaseleccionada = this.repo.FindCitasDetalladasMedicosSinFiltro(idcita);
+            return View(citaseleccionada);
+        }
+        [HttpPost]
+        public IActionResult CitaMedicaFinal(int idcita , string? comentario , int seguimiento)
+        {
+            this.repo.UpdateCitaMedica(idcita,comentario,seguimiento);
+            return RedirectToAction("MisCitasMedico");
+        }
+
+
+
+
         // Zona de PACIENTES ***.
         public IActionResult ZonaPaciente()
         {
@@ -493,7 +534,54 @@ namespace CentroMedico.Controllers
         public IActionResult GetMiMedico(int idPaciente)
         {
             MedicoDetallado medicoAsignado = this.repo.GetMiMedico(idPaciente);
-            return View(medicoAsignado);
+            if (medicoAsignado == null)
+            {
+                ViewData["MENSAJE"] = "No tienes medico Asigando aun";
+                return View();
+            }
+            else
+            {
+                return View(medicoAsignado);
+            } 
+        }
+
+        public IActionResult CreateCitaPaciente()
+        {
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            Usuario paciente = this.repo.FindUsuario(idUsuario);
+            MedicoDetallado medico = this.repo.GetMiMedico(idUsuario);
+            ViewData["IDMEDICO"] = medico.Id;
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            return View(paciente);
+        }
+        [HttpPost]
+        public IActionResult CreateCitaPaciente(DateTime fecha, TimeSpan hora, int idmedico, int idpaciente)
+        {
+            int idUsuario = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            Usuario paciente = this.repo.FindUsuario(idUsuario);
+            MedicoDetallado medico = this.repo.GetMiMedico(idUsuario);
+            ViewData["IDMEDICO"] = medico.Id;
+            ViewData["NOMBREMEDICO"] = medico.Nombre + " " + medico.Apellido;
+            DateTime hoy = DateTime.Now;
+            if (fecha < hoy)
+            {
+                ViewData["MENSAJE"] = "Esto es regreso al pasado ?? Pon una fecha correcta";
+                return View(paciente);
+            }
+            else
+            {
+                int dispo = this.repo.FindCitaDispo(idmedico , idpaciente, fecha, hora);
+                if (dispo == 0)
+                {
+                    ViewData["OTROMENSAJE"] = "Esta Fecha y Hora no esta disponible";
+                    return View(paciente);
+                }
+                else
+                {
+                    this.repo.CreateCitaPaciente(fecha, hora, idmedico, idpaciente);
+                    return RedirectToAction("ZonaPaciente");
+                }
+            }
         }
     }
 }

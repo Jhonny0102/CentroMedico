@@ -122,6 +122,14 @@ using System;
 //	INNER JOIN ESTADOUSUARIO
 //	ON PETICIONESMEDICAMENTOS.ID_ESTADO_NUEVO=ESTADOUSUARIO.ID
 //GO
+
+//CREATE VIEW V_CITASMEDICOS_FILTRO
+//AS
+//	SELECT CITAS.ID, CITAS.FECHA, CITAS.HORA, CITAS.ID_MEDICO, CITAS.ID_PACIENTE , USUARIOS.NOMBRE , USUARIOS.APELLIDO 
+//	FROM CITAS 
+//	INNER JOIN USUARIOS
+//	ON CITAS.ID_PACIENTE = USUARIOS.ID
+//GO
 #endregion
 
 #region PROCEDURES
@@ -135,8 +143,8 @@ using System;
 //	delete from medicopaciente
 //	where id_paciente=@id
 
-//	delete from peticionesbajas
-//	where id_usuario=@id
+//	delete from peticionesusuarios
+//	where id_usuario_modificar=@id
 
 //	delete from medicamentopaciente
 //	where id_paciente=@id
@@ -307,6 +315,21 @@ using System;
 //	DECLARE @idMax int
 //	SELECT @idMax = MAX(ID) + 1 from PETICIONESMEDICAMENTOS
 //	INSERT INTO PETICIONESMEDICAMENTOS (ID, ID_MEDICO, NOMBRE, DESCRIPCION, ID_ESTADO_NUEVO) VALUES (@idMax, @idMedico, @nombreMedicamento, @descMedicamento, @idEstadoMedicamento)
+//GO
+
+//CREATE PROCEDURE SP_CREATECITAPACIENTE
+//(@fecha date , @hora time, @idmedico int , @idpaciente int)
+//AS
+//	DECLARE @idmax int 
+//	SELECT @idmax = MAX(ID) + 1 FROM CITAS
+//	INSERT INTO CITAS(ID, FECHA, HORA, ID_SEGUIMIENTOCITA, ID_MEDICO, ID_PACIENTE) VALUES (@idmax, @fecha, @hora,3, @idmedico, @idpaciente)
+//GO
+
+//CREATE PROCEDURE SP_UPDATECITAMEDICA
+//(@idcita int, @comentario nvarchar(Max), @seguimiento int)
+//AS
+//	UPDATE CITAS SET COMENTARIO=@comentario , ID_SEGUIMIENTOCITA = @seguimiento
+//	WHERE ID=@idcita
 //GO
 #endregion
 
@@ -607,6 +630,12 @@ namespace CentroMedico.Repositories
             this.context.SaveChanges();
         }
 
+        //Metodo para mostrar todos los estado de un SeguimientoCita
+        public List<SeguimientoCita> GetAllSeguimientoCita()
+        {
+            return this.context.SeguimientoCita.ToList();
+        }
+
         //Metodo para obtener los datos de la tabla SeguimientoCita
         public SeguimientoCita GetSeguimientoCita(int idSeguimiento)
         {
@@ -735,12 +764,79 @@ namespace CentroMedico.Repositories
             return context.Estados.ToList();
         }
 
+        //Metodo para encontrar el nombre del id estado
         public string FindNombreEstado(int idEstado)
         {
             var consulta = from datos in this.context.Estados
                            where datos.Id == idEstado
                            select datos.Estado;
             return consulta.FirstOrDefault();
+        }
+
+        //Metodo para crear una cita siendo paciente.
+        public void CreateCitaPaciente(DateTime fecha, TimeSpan hora, int idmedico , int idpaciente)
+        {
+            string sql = "SP_CREATECITAPACIENTE @fecha , @hora , @idmedico , @idpaciente";
+            SqlParameter pamFecha = new SqlParameter("@fecha",fecha);
+            SqlParameter pamHora = new SqlParameter("@hora", hora);
+            SqlParameter pamMedico = new SqlParameter("@idmedico", idmedico);
+            SqlParameter pamPaciente = new SqlParameter("@idpaciente", idpaciente);
+            this.context.Database.ExecuteSqlRaw(sql, pamFecha, pamHora, pamMedico , pamPaciente);
+        }
+
+        //Metodo para encontrar una cita (Que este en proceso porque si ya finalizo la cita da igual)
+        public int FindCitaDispo(int idmedico , int idpaciente , DateTime fecha , TimeSpan hora)
+        {
+            var consulta = from datos in this.context.Citas
+                           where datos.Medico == idmedico && datos.Paciente == idpaciente && datos.Fecha == fecha && datos.Hora == hora
+                           && datos.SeguimientoCita == 3
+                           select datos;
+            if (consulta != null)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+            
+        }
+
+        //Metodo para encontrar citas que tiene un MEDICO
+        public List<CitaDetalladaMedicos> GetCitasDetalladasMedico(int idmedico)
+        {
+            return this.context.CitaDetalladaMedicos.Where(z=>z.IdMedico == idmedico).ToList();
+        }
+
+        //Metodo para filtrar por fecha las citas de los MEDICOS
+        public List<CitaDetalladaMedicos> FindCitasDetalladasMedicos(int idmedico , DateTime fecha)
+        {
+            return this.context.CitaDetalladaMedicos.Where(z=>z.IdMedico == idmedico && z.Fecha == fecha).ToList();
+        }
+
+        //Metodo para filtrar la cita seleccinada
+        public CitaDetalladaMedicos FindCitasDetalladasMedicosSinFiltro(int idcita)
+        {
+            return this.context.CitaDetalladaMedicos.Where(z => z.Id == idcita).FirstOrDefault();
+        }
+
+        //Metodo para actualizar una cita MEDICA
+        public void UpdateCitaMedica(int idcita, string comentario , int seguimiento)
+        {
+            if (comentario != null)
+            {
+                string sql = "SP_UPDATECITAMEDICA @idcita , @comentario , @seguimiento";
+                SqlParameter pamIdCita = new SqlParameter("@idcita", idcita);
+                SqlParameter pamComentario = new SqlParameter("@comentario", comentario);
+                SqlParameter pamSeguimiento = new SqlParameter("@seguimiento", seguimiento);
+                this.context.Database.ExecuteSqlRaw(sql, pamIdCita, pamComentario, pamSeguimiento);
+            }
+            else
+            {
+                Cita cita = this.FindCita(idcita);
+                cita.SeguimientoCita = seguimiento;
+                this.context.SaveChanges();
+            }
         }
     }
 }

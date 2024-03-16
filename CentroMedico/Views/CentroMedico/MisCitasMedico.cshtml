@@ -1,0 +1,39 @@
+﻿@model List<CitaDetalladaMedicos>
+
+<h1>Mis Citas como Medico</h1>
+
+<form method="post">
+    <label>Escoge fecha: </label>
+    <input type="date" name="fecha" class="form-control" />
+    <button class="btn btn-success">
+        Buscar
+    </button>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Paciente</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (CitaDetalladaMedicos miscitas in Model)
+        {
+            <tr>
+                <td>@miscitas.Fecha</td>
+                <td>@miscitas.Hora</td>
+                <td>@miscitas.NombrePaciente @miscitas.ApellidoPaciente</td>
+                <td>
+                    <a asp-controller="CentroMedico" asp-action="CitaMedicaFinal" asp-route-idcita="@miscitas.Id" class="btn btn-info">Entrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2 style="color:orangered">
+    @ViewData["MENSAJE"] 
+</h2>

@@ -1,0 +1,25 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace CentroMedico.Models
+{
+    [Table("V_CITASMEDICOS_FILTRO")]
+    public class CitaDetalladaMedicos
+    {
+        [Key]
+        [Column("ID")]
+        public int Id { get; set; }
+        [Column("FECHA")]
+        public DateTime Fecha { get; set; }
+        [Column("HORA")]
+        public TimeSpan Hora { get; set; }
+        [Column("ID_MEDICO")]
+        public int IdMedico { get; set; }
+        [Column("ID_PACIENTE")]
+        public int IdPaciente { get; set; }
+        [Column("NOMBRE")]
+        public string NombrePaciente { get; set; }
+        [Column("APELLIDO")]
+        public string ApellidoPaciente { get; set; }
+    }
+}
