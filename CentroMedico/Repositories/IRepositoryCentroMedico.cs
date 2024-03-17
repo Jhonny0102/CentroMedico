@@ -52,7 +52,10 @@ namespace CentroMedico.Repositories
         public int FindCitaDispo(int idmedico, int idpaciente, DateTime fecha, TimeSpan hora);
         public List<CitaDetalladaMedicos> GetCitasDetalladasMedico(int idmedico);
         public List<CitaDetalladaMedicos> FindCitasDetalladasMedicos(int idmedico, DateTime fecha);
+        public List<CitaDetalladaMedicos> FindCitasDetalladasPAciente(int idpaciente, DateTime fecha);
         public List<SeguimientoCita> GetAllSeguimientoCita();
+        public void UpdateCitaMedica(int idmedico, int idpaciente, int idcita, string comentario, int seguimiento, List<int> medicamentos);
+        public List<Medicamentos> GetAllMedicamentos();
     }
 
 }

@@ -1,0 +1,53 @@
+﻿@model CentroMedico.Models.CitaDetalladaMedicos
+
+@{
+    ViewData["Title"] = "DetallesCitaPaciente";
+}
+
+<h1>DetallesCitaPaciente</h1>
+
+<div>
+    <h4>CitaDetalladaMedicos</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Fecha)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Fecha)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hora)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hora)
+        </dd>
+        <dt class = "col-sm-2">
+            Nombre Medico: 
+        </dt>
+        <dd class = "col-sm-10">
+            @ViewData["NOMBREMEDICO"]
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombrePaciente)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombrePaciente) @Html.DisplayFor(model => model.ApellidoPaciente)
+        </dd>
+        <dt class = "col-sm-2">
+            Motivo 
+        </dt>
+        <dd class = "col-sm-10">
+            
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Comentario)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Comentario)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="ZonaPaciente" class="btn btn-info">Volver</a>
+</div>

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 namespace CentroMedico.Models
@@ -21,5 +21,9 @@ namespace CentroMedico.Models
         public string NombrePaciente { get; set; }
         [Column("APELLIDO")]
         public string ApellidoPaciente { get; set; }
+        [Column("ID_ESTADOCITA")]
+        public int IdEstadoCita { get; set; }
+        [Column("COMENTARIO")]
+        public string? Comentario { get; set; }
     }
 }

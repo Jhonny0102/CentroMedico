@@ -125,7 +125,7 @@ using System;
 
 //CREATE VIEW V_CITASMEDICOS_FILTRO
 //AS
-//	SELECT CITAS.ID, CITAS.FECHA, CITAS.HORA, CITAS.ID_MEDICO, CITAS.ID_PACIENTE , USUARIOS.NOMBRE , USUARIOS.APELLIDO 
+//	SELECT CITAS.ID, CITAS.FECHA, CITAS.HORA, CITAS.ID_MEDICO, CITAS.ID_PACIENTE , USUARIOS.NOMBRE , USUARIOS.APELLIDO , CITAS.ID_ESTADOCITA , CITAS.COMENTARIO
 //	FROM CITAS 
 //	INNER JOIN USUARIOS
 //	ON CITAS.ID_PACIENTE = USUARIOS.ID
@@ -317,19 +317,34 @@ using System;
 //	INSERT INTO PETICIONESMEDICAMENTOS (ID, ID_MEDICO, NOMBRE, DESCRIPCION, ID_ESTADO_NUEVO) VALUES (@idMax, @idMedico, @nombreMedicamento, @descMedicamento, @idEstadoMedicamento)
 //GO
 
-//CREATE PROCEDURE SP_CREATECITAPACIENTE
+//create procedure sp_createcitapaciente
 //(@fecha date , @hora time, @idmedico int , @idpaciente int)
-//AS
-//	DECLARE @idmax int 
-//	SELECT @idmax = MAX(ID) + 1 FROM CITAS
-//	INSERT INTO CITAS(ID, FECHA, HORA, ID_SEGUIMIENTOCITA, ID_MEDICO, ID_PACIENTE) VALUES (@idmax, @fecha, @hora,3, @idmedico, @idpaciente)
-//GO
+//as
+//	declare @idmax int 
+//	select @idmax = max(id) + 1 from citas
+//	insert into citas(id, fecha, hora, id_seguimientocita, id_medico, id_paciente, id_estadocita) values (@idmax, @fecha, @hora,3, @idmedico, @idpaciente, 1)
+//go
 
 //CREATE PROCEDURE SP_UPDATECITAMEDICA
 //(@idcita int, @comentario nvarchar(Max), @seguimiento int)
 //AS
-//	UPDATE CITAS SET COMENTARIO=@comentario , ID_SEGUIMIENTOCITA = @seguimiento
+//	UPDATE CITAS SET COMENTARIO=@comentario , ID_SEGUIMIENTOCITA = @seguimiento, ID_ESTADOCITA = 2
 //	WHERE ID=@idcita
+//GO
+
+//CREATE PROCEDURE SP_UPDATECITAMEDICA_SINCOMENTARIO
+//(@idcita int, @seguimiento int)
+//AS
+//	UPDATE CITAS SET  ID_SEGUIMIENTOCITA=@seguimiento , ID_ESTADOCITA = 2
+//	WHERE ID=@idcita
+//GO
+
+//CREATE PROCEDURE SP_INSERTMEDICAMENTOPACIENTE
+//(@idmedicamento int, @idmedico int, @idpaciente int)
+//AS
+//	DECLARE @maxid int
+//	SELECT @maxid = MAX(ID) + 1 FROM MEDICAMENTOPACIENTE
+//	INSERT INTO MEDICAMENTOPACIENTE (ID, ID_MEDICAMENTO, ID_MEDICO, ID_PACIENTE, ID_DISPOMEDICAMENTO) VALUES (@maxid, @idmedicamento, @idmedico, @idpaciente,1)
 //GO
 #endregion
 
@@ -821,7 +836,7 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para actualizar una cita MEDICA
-        public void UpdateCitaMedica(int idcita, string comentario , int seguimiento)
+        public void UpdateCitaMedica(int idmedico , int idpaciente , int idcita, string comentario , int seguimiento, List<int> medicamentos)
         {
             if (comentario != null)
             {
@@ -833,10 +848,39 @@ namespace CentroMedico.Repositories
             }
             else
             {
-                Cita cita = this.FindCita(idcita);
-                cita.SeguimientoCita = seguimiento;
-                this.context.SaveChanges();
+                string sql = "SP_UPDATECITAMEDICA_SINCOMENTARIO @idcita, @seguimiento";
+                SqlParameter pamIdCita = new SqlParameter("@idcita", idcita);
+                SqlParameter pamSeguimiento = new SqlParameter("@seguimiento", seguimiento);
+                this.context.Database.ExecuteSqlRaw(sql, pamIdCita, pamSeguimiento);
             }
+            if (medicamentos != null)
+            {
+                foreach (int medis in medicamentos)
+                {
+                    string sql = "SP_INSERTMEDICAMENTOPACIENTE @idmedicamento, @idmedico, @idpaciente";
+                    SqlParameter pamIdMedicamento = new SqlParameter("@idmedicamento", medis);
+                    SqlParameter pamIdMedico = new SqlParameter("@idmedico", idmedico);
+                    SqlParameter pamIdPaciente = new SqlParameter("@idpaciente", idpaciente);
+                    this.context.Database.ExecuteSqlRaw(sql, pamIdMedicamento, pamIdMedico, pamIdPaciente);
+                }
+            }
+        }
+
+        //Metodo para obtener todos los medicamentos
+        public List<Medicamentos> GetAllMedicamentos()
+        {
+            return this.context.Medicamentos.Where(z => z.Id_Estado == 1).ToList();
+        }
+
+        //Metodo para buscar todas las citas de un PACIENTE
+        public List<CitaDetalladaMedicos> FindCitasPaciente(int idpaciente)
+        {
+            return this.context.CitaDetalladaMedicos.Where(z => z.IdPaciente == idpaciente).ToList();
+        }
+
+        public List<CitaDetalladaMedicos> FindCitasDetalladasPAciente(int idpaciente, DateTime fecha)
+        {
+            return this.context.CitaDetalladaMedicos.Where(z => z.IdPaciente == idpaciente && z.Fecha == fecha).ToList();
         }
     }
 }

@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CentroMedico.Models.CitaDetalladaMedicos>
+
+<h1>CitasPaciente</h1>
+
+<form method="post">
+    <label>Seleccione fecha: </label>
+    <input type="date" name="fecha" class="form-control" />
+    <button class="btn btn-success">
+        Buscar
+    </button>
+</form>
+
+
+@* Se puede mejorar el diseño *@
+
+@foreach (CitaDetalladaMedicos citas in Model)
+{
+    <div class="card border-light mb-3" style="max-width: 18rem;">
+        <div class="card-header">@citas.Fecha</div>
+        <div class="card-body">
+            <h5 class="card-title">@citas.Hora</h5>
+            <p class="card-text">Nombre Medico : @ViewData["NOMBREMEDICO"]</p>
+            <p class="card-text">Nombre Paciente: @citas.NombrePaciente @citas.ApellidoPaciente</p>
+            <p>
+                @if (citas.Fecha < DateTime.Now)
+                {
+                    <a asp-controller="CentroMedico" asp-action="DetallesCitaPaciente" asp-route-idcita="@citas.Id" class="btn btn-info">Detalles</a>
+                }
+                else
+                {
+                    <a asp-controller="CentroMedico" asp-action="DetallesCitaPaciente" asp-route-idcita="@citas.Id" class="btn btn-info">Detalles</a>
+                    <a asp-controller="" asp-action="" class="btn btn-danger">Anular</a>
+                    <a asp-controller="" asp-action="" class="btn btn-warning">Cambiar</a>
+                }
+            </p>
+        </div>
+    </div>
+}
