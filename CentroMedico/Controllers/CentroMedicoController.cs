@@ -560,8 +560,8 @@ namespace CentroMedico.Controllers
             }
             else
             {
-                int dispo = this.repo.FindCitaDispo(idmedico , idpaciente, fecha, hora); //Seria conveniente encontrar solo por los paraemtros
-                if (dispo == 0)                                                          //idmedico , fecha y hora ya que el paciente puede variar
+                int dispo = this.repo.FindCitaDispo(idmedico, fecha, hora); 
+                if (dispo == 0)
                 {
                     ViewData["OTROMENSAJE"] = "Esta Fecha y Hora no esta disponible";
                     return View(paciente);
@@ -598,13 +598,21 @@ namespace CentroMedico.Controllers
             return View(miscitas);
         }
         [HttpPost]
-        public IActionResult CitasPaciente(DateTime fecha)
+        public IActionResult CitasPaciente(DateTime fechadesde, DateTime? fechahasta)
         {
             int id = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
-            List<CitaDetalladaMedicos> miscitas = this.repo.FindCitasDetalladasPAciente(id,fecha);
             MedicoDetallado mimedico = this.repo.GetMiMedico(id);
             ViewData["NOMBREMEDICO"] = mimedico.Nombre + " " + mimedico.Apellido;
-            return View(miscitas);
+            if (fechahasta != null)
+            {
+                List<CitaDetalladaMedicos> miscitas = this.repo.FindCitasDetalladasPAciente(id, fechadesde, fechahasta.Value);
+                return View(miscitas);
+            }
+            else
+            {
+                List<CitaDetalladaMedicos> miscitas = this.repo.FindCitasDetalladasPAciente(id,fechadesde,null);
+                return View(miscitas);
+            }
         }
 
         //Controller para mostrar los detalles de una cita
@@ -618,8 +626,40 @@ namespace CentroMedico.Controllers
         }
 
         //Controller para anular una cita siendo PACIENTE
+        public IActionResult UpdateCitaPaciente(int idcita)
+        {
+            CitaDetalladaMedicos micita = this.repo.FindCitasDetalladasMedicosSinFiltro(idcita);
+            MedicoDetallado mimedico = this.repo.GetMiMedico(micita.IdPaciente);
+            ViewData["MIMEDICO"] = mimedico.Nombre + " " + mimedico.Apellido;
+            return View(micita);
+        }
+        [HttpPost]
+        public IActionResult UpdateCitaPaciente(int idcita , DateTime fecha , TimeSpan hora)
+        {
+            this.repo.UpdateCitaDetalladaPaciente(idcita,fecha,hora);
+            return RedirectToAction("CitasPaciente");
+        }
 
         //Controller para Cambiar hora o fecha siendo Paciente
+        public IActionResult DeleteCitaPaciente(int idcita)
+        {
+            this.repo.DeleteCita(idcita);
+            return RedirectToAction("CitasPaciente");
+        }
 
+        //Controller para mostrar los medicamentos de un PACIENTE
+        public IActionResult MedicamentosYPacientes()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            List<MedicamentoYPaciente> mismedicamentos = this.repo.GetAllMedicamentosPaciente(id);
+            return View(mismedicamentos);
+        }
+
+        //Controller para sacar un medicamento siendo un Paciente
+        public IActionResult SacarMedicamento(int id)
+        {
+            this.repo.UpdateMedicamentoYPaciente(id);
+            return RedirectToAction("MedicamentosYPacientes");
+        }
     }
 }

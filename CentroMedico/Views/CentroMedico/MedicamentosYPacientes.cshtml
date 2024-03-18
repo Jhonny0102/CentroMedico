@@ -1,0 +1,26 @@
+﻿@model List<MedicamentoYPaciente>
+
+<h1>Mis Medicamentos</h1>
+
+<p>
+    <a asp-controller="CentroMedico" asp-action="ZonaPaciente" class="btn btn-dark">Back</a>
+</p>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (MedicamentoYPaciente mismedis in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@mismedis.NombreMedicamento</h5>
+                    <p class="card-text">
+                        @mismedis.DescripcionMedicamento
+                    </p>
+                    <p>
+                        <a asp-controller="CentroMedico" asp-action="SacarMedicamento" asp-route-id="@mismedis.Id" class="btn btn-outline-success">Sacar</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

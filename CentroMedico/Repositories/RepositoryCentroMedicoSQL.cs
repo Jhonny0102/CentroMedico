@@ -130,6 +130,21 @@ using System;
 //	INNER JOIN USUARIOS
 //	ON CITAS.ID_PACIENTE = USUARIOS.ID
 //GO
+
+//CREATE VIEW V_MEDICAMENTOSYPACIENTES
+//AS
+//	SELECT  MEDICAMENTOPACIENTE.ID , MEDICAMENTOPACIENTE.ID_MEDICAMENTO AS IDMEDICAMENTO, MEDICAMENTOS.NOMBRE AS NOMBREMEDICAMENTO , MEDICAMENTOS.DESCRIPCION ,
+//    MEDICAMENTOPACIENTE.ID_MEDICO AS IDMEDICO, USUARIOS.NOMBRE , USUARIOS.APELLIDO ,
+//    MEDICAMENTOPACIENTE.ID_PACIENTE AS IDPACIENTE ,
+//    MEDICAMENTOPACIENTE.ID_DISPOMEDICAMENTO AS IDDISPOMEDICAMENTO, DISPONIBILIDADMEDICAMENTOS.ESTADO
+//	FROM MEDICAMENTOPACIENTE
+//	INNER JOIN USUARIOS
+//	ON MEDICAMENTOPACIENTE.ID_MEDICO=USUARIOS.ID
+//	INNER JOIN DISPONIBILIDADMEDICAMENTOS
+//	ON MEDICAMENTOPACIENTE.ID_DISPOMEDICAMENTO=DISPONIBILIDADMEDICAMENTOS.ID
+//	INNER JOIN MEDICAMENTOS
+//	ON MEDICAMENTOPACIENTE.ID_MEDICAMENTO= MEDICAMENTOS.ID
+//GO
 #endregion
 
 #region PROCEDURES
@@ -800,10 +815,10 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para encontrar una cita (Que este en proceso porque si ya finalizo la cita da igual)
-        public int FindCitaDispo(int idmedico , int idpaciente , DateTime fecha , TimeSpan hora)
+        public int FindCitaDispo(int idmedico , DateTime fecha , TimeSpan hora)
         {
             var consulta = from datos in this.context.Citas
-                           where datos.Medico == idmedico && datos.Paciente == idpaciente && datos.Fecha == fecha && datos.Hora == hora
+                           where datos.Medico == idmedico && datos.Fecha == fecha && datos.Hora == hora
                            && datos.SeguimientoCita == 3
                            select datos;
             if (consulta != null)
@@ -878,9 +893,47 @@ namespace CentroMedico.Repositories
             return this.context.CitaDetalladaMedicos.Where(z => z.IdPaciente == idpaciente).ToList();
         }
 
-        public List<CitaDetalladaMedicos> FindCitasDetalladasPAciente(int idpaciente, DateTime fecha)
+        //Metodo para encontrar una cita detallada siendo Paciente
+        public List<CitaDetalladaMedicos> FindCitasDetalladasPAciente(int idpaciente, DateTime fechadesde, DateTime? fechahasta)
         {
-            return this.context.CitaDetalladaMedicos.Where(z => z.IdPaciente == idpaciente && z.Fecha == fecha).ToList();
+            if (fechahasta == null)
+            {
+                return this.context.CitaDetalladaMedicos.Where(z => z.IdPaciente == idpaciente && z.Fecha >= fechadesde).ToList();
+            }
+            else
+            {
+                return this.context.CitaDetalladaMedicos.Where(z => z.IdPaciente == idpaciente && z.Fecha >= fechadesde && z.Fecha <= fechahasta).ToList();
+            }
+            
+        }
+
+        //Metodo para cambiar los datos de la cita siendo paciente
+        public void UpdateCitaDetalladaPaciente(int idcita, DateTime fecha , TimeSpan hora)
+        {
+            Cita micita = this.FindCita(idcita);
+            micita.Fecha = fecha;
+            micita.Hora = hora;
+            this.context.SaveChanges();
+        }
+
+        //Metodo para obtener todos los medicamentos de un paciente
+        public List<MedicamentoYPaciente> GetAllMedicamentosPaciente(int idpaciente)
+        {
+            return this.context.MedicamentoYPacientes.Where(z => z.IdPaciente == idpaciente && z.IdDispoMedicamento == 1).ToList();
+        }
+
+        //Metodo para encontrar un dato de MedicamentoYPaciente
+        public MedicamentoYPaciente FindMedicamentoYPaciente(int id)
+        {
+            return this.context.MedicamentoYPacientes.Where(z => z.Id == id).FirstOrDefault();
+        }
+
+        //Metodo para actualizar los datos de MedicamentoYPaciente
+        public void UpdateMedicamentoYPaciente(int id)
+        {
+            MedicamentoYPaciente misdatos = this.FindMedicamentoYPaciente(id);
+            misdatos.IdDispoMedicamento = 2;
+            this.context.SaveChanges();
         }
     }
 }

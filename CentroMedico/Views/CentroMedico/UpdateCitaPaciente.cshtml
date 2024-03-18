@@ -1,0 +1,62 @@
+﻿@model CentroMedico.Models.CitaDetalladaMedicos
+
+@{
+    ViewData["Title"] = "UpdateCitaPaciente";
+}
+
+<h1>UpdateCitaPaciente</h1>
+
+<h4>CitaDetalladaMedicos</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="UpdateCitaPaciente">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input name="idcita" class="form-control" value="@Model.Id" hidden/>
+            </div>
+            <div class="form-group">
+                <label>Nombre Paciente: </label>
+                <input asp-for="NombrePaciente" class="form-control" placeholder="@Model.NombrePaciente @Model.ApellidoPaciente"/>
+                <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Nombre Medico: </label>
+                <input class="form-control" placeholder="@ViewData["MIMEDICO"]" />
+                <span asp-validation-for="NombrePaciente" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Seleccione Fecha: </label>
+                <input type="text" class="form-control" placeholder="@Model.Fecha"/>
+            </div>
+            <div class="form-group">
+                <label>Seleccione Hora: </label>
+                <input type="text" class="form-control" placeholder="@Model.Hora"/>
+            </div>
+
+            <hr/>
+
+            <h4>Nueva Fecha y Hora</h4>
+            <div class="form-group">
+                <label>Seleccione Fecha: </label>
+                <input type="date" name="fecha" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Seleccione Hora: </label>
+                <input type="time" name="hora" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

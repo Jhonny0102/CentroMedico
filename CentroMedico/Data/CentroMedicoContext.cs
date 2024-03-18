@@ -28,5 +28,7 @@ namespace CentroMedico.Data
         public DbSet<Medicamentos> Medicamentos { get; set; }
         public DbSet<Estados> Estados { get; set; }
         public DbSet<CitaDetalladaMedicos> CitaDetalladaMedicos { get; set; }
+        public DbSet<MedicamentoYPaciente> MedicamentoYPacientes { get; set; }
+        public DbSet<MedicamentoYPacienteSInView> MedicamentoYPacienteSInViews { get; set; }
     }
 }
