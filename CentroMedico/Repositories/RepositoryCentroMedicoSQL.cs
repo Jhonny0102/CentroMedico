@@ -819,7 +819,7 @@ namespace CentroMedico.Repositories
         {
             var consulta = from datos in this.context.Citas
                            where datos.Medico == idmedico && datos.Fecha == fecha && datos.Hora == hora
-                           && datos.SeguimientoCita == 3
+                           && datos.SeguimientoCita == 3 && datos.IdEstado == 1
                            select datos;
             if (consulta != null)
             {
@@ -934,6 +934,17 @@ namespace CentroMedico.Repositories
             MedicamentoYPaciente misdatos = this.FindMedicamentoYPaciente(id);
             misdatos.IdDispoMedicamento = 2;
             this.context.SaveChanges();
+        }
+
+        //Metodo para encontrar un usuario por datos de nombre, apellido y correo
+        public Paciente FindPacienteDistintoDetallado(string nombre, string apellido , string correo)
+        {
+            return this.context.Paciente.Where(z => z.Apellido == apellido && z.Nombre == nombre && z.Correo == correo).FirstOrDefault();
+        }
+
+        public MedicosPacientes GetMedicoPaciente(int idpaciente)
+        {
+            return this.context.MedicosPacientes.Where(z => z.Paciente == idpaciente).FirstOrDefault();
         }
     }
 }

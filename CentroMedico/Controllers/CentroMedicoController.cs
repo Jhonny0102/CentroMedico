@@ -415,10 +415,35 @@ namespace CentroMedico.Controllers
             return View(usuario);
         }
 
+        //Controller para actualizar datos de Recepcionista
+        public IActionResult UpdateRecepcionsita()
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            Usuario recep = this.repo.FindUsuario(id);
+            return View(recep);
+        }
+        [HttpPost]
+        public IActionResult UpdateRecepcionsita(int id, string nombre, string apellido , string correo , string contra , int estado, int tipo)
+        {
+            this.repo.EditUsuario(id,nombre,apellido,correo,contra,estado,tipo);
+            return RedirectToAction("ZonaRecepcionista");
+        }
+
+        public IActionResult CitaRapidaRecepcionista()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult CitaRapidaRecepcionista(string nombre , string apellido , string correo)
+        {
+            Paciente paciente = this.repo.FindPacienteDistintoDetallado(nombre, apellido , correo);
+            ViewData["SUMEDICO"]= this.repo.GetMedicoPaciente(paciente.Id);
+            return View(paciente);
+        }
 
 
         // Zona de MEDICO ***.
-        
+
         //Los dos controllers de abajo devuelven lo mismo , solo que el primero guarda un model en la vista y usamos algunas propiedades
         //El otro envia a la vista zonamedicaperfil y carga ahi los datos del medico
         public IActionResult ZonaMedico()
@@ -561,7 +586,7 @@ namespace CentroMedico.Controllers
             else
             {
                 int dispo = this.repo.FindCitaDispo(idmedico, fecha, hora); 
-                if (dispo == 0)
+                if (dispo == 1)
                 {
                     ViewData["OTROMENSAJE"] = "Esta Fecha y Hora no esta disponible";
                     return View(paciente);

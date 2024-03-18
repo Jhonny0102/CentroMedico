@@ -23,6 +23,7 @@ namespace CentroMedico.Models
         public int Paciente { get; set; }
         [Column("COMENTARIO")]
         public string? Comentario { get; set; }
-
+        [Column("ID_ESTADOCITA")]
+        public int IdEstado { get; set; }
     }
 }

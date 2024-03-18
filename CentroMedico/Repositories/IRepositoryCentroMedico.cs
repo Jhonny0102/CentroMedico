@@ -57,6 +57,9 @@ namespace CentroMedico.Repositories
         public void UpdateCitaMedica(int idmedico, int idpaciente, int idcita, string comentario, int seguimiento, List<int> medicamentos);
         public List<Medicamentos> GetAllMedicamentos();
         public void UpdateCitaDetalladaPaciente(int idcita, DateTime fecha, TimeSpan hora);
+        public List<MedicamentoYPaciente> GetAllMedicamentosPaciente(int idpaciente);
+        public MedicamentoYPaciente FindMedicamentoYPaciente(int id);
+        public void UpdateMedicamentoYPaciente(int id);
     }
 
 }

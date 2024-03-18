@@ -6,55 +6,19 @@
 
 <h1>ZonaRecepcionista</h1>
 
-<div>
-    <h4>Usuario</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Apellido)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Apellido)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Correo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Correo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Contra)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Contra)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id_EstadoUsuario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id_EstadoUsuario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id_TipoUsuario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id_TipoUsuario)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+<h3>Opciones:</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+        <a asp-controller="CentroMedico" asp-action="UpdateRecepcionsita">Perfil</a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="CentroMedico" asp-action="">Cita Rapida</a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="CentroMedico" asp-action="">Modficar Usuario</a>
+    </li>
+    <li class="list-group-item">
+        <a asp-controller="CentroMedico" asp-action="">Peticiones Usuario</a>
+    </li>
+</ul>
