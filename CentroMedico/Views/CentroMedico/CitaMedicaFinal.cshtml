@@ -7,6 +7,10 @@
 
 <h1>Cita Medica Final con Paciente : @Model.NombrePaciente</h1>
 
+<p>
+    <a asp-controller="CentroMedico" asp-action="MisCitasMedico" class="btn btn-dark">Back</a>
+</p>
+
 <form method="post">
     <input type="number" name="idmedico" value="@Model.IdMedico" hidden/>
     <input type="number" name="idpaciente" value="@Model.IdPaciente" hidden/>
