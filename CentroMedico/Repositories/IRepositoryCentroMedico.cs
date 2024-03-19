@@ -60,6 +60,8 @@ namespace CentroMedico.Repositories
         public List<MedicamentoYPaciente> GetAllMedicamentosPaciente(int idpaciente);
         public MedicamentoYPaciente FindMedicamentoYPaciente(int id);
         public void UpdateMedicamentoYPaciente(int id);
+        public Paciente FindPacienteDistintoDetallado(string nombre, string apellido, string correo);
+        public MedicosPacientes GetMedicoPaciente(int idpaciente);
     }
 
 }

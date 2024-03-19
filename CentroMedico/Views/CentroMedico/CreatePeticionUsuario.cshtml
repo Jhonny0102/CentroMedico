@@ -1,20 +1,16 @@
 ﻿@model Paciente
 
 @{
-    int idmedico=0;
-    if (ViewData["SUMEDICO"] != null)
-    {
-        idmedico = (int)ViewData["SUMEDICO"];
-    }
+    List<Estados> estados = ViewData["ESTADOUSUARIO"] as List<Estados>;
 }
 
-<h1>Cita Rapida Recepcionista</h1>
+<h1>Crear Peticion Usuarios</h1>
 
 <p>
     <a asp-controller="CentroMedico" asp-action="ZonaRecepcionista" class="btn btn-dark">Back</a>
 </p>
 
-@if(Model != null)
+@if (Model != null)
 {
     <form method="post">
         <h5>Datos Paciente</h5>
@@ -25,21 +21,31 @@
         <label>Correo: </label>
         <input type="text" name="correo" class="form-control" value="@Model.Correo" />
         <label>Telefono: </label>
-        <input type="text" name="telefono" class="form-control" value="@Model.Telefono"/>
+        <input type="text" name="telefono" class="form-control" value="@Model.Telefono" />
         <label>Direccion: </label>
         <input type="text" name="direccion" class="form-control" value="@Model.Direccion" />
         <label>Genero: </label>
         <input type="text" name="genero" class="form-control" value="@Model.Genero" />
-        <input type="number" name="idmedico" class="form-control" value="@idmedico" hidden/>
-        <input type="number" name="idpaciente" class="form-control" value="@Model.Id" hidden/>
-        <hr/>
-        <h5>Fecha y Hora</h5>
-        <label>Fecha: </label>
-        <input type="date" name="fecha" class="form-control" />
-        <label>Hora: </label>
-        <input type="time" name="hora" class="form-control" /><br/>
+        <input type="number" name="idpaciente" class="form-control" value="@Model.Id" hidden />
+        <hr />
+        <h5>Solicitud Estado</h5>
+        <label>Estado Solicitud: </label>
+        <select name="estadonuevo" class="form-select">
+            @foreach (Estados estado in estados)
+            {
+                if (Model.EstadoUsuario == estado.Id)
+                {
+                    <option value="@estado.Id" disabled>@estado.Estado</option>
+                }
+                else
+                {
+                    <option value="@estado.Id">@estado.Estado</option>
+                }
+            }
+        </select>
+        <br />
         <button class="btn btn-success">
-            Pedir Cita
+            Solicitar Peticion
         </button>
     </form>
 }
@@ -51,7 +57,7 @@ else
         <label>Apellido: </label>
         <input type="text" name="apellido" class="form-control" />
         <label>Correo: </label>
-        <input type="text" name="correo" class="form-control" /><br/>
+        <input type="text" name="correo" class="form-control" /><br />
         <button class="btn btn-success">
             Buscar
         </button>

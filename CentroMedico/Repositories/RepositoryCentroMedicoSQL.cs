@@ -361,6 +361,14 @@ using System;
 //	SELECT @maxid = MAX(ID) + 1 FROM MEDICAMENTOPACIENTE
 //	INSERT INTO MEDICAMENTOPACIENTE (ID, ID_MEDICAMENTO, ID_MEDICO, ID_PACIENTE, ID_DISPOMEDICAMENTO) VALUES (@maxid, @idmedicamento, @idmedico, @idpaciente,1)
 //GO
+
+//CREATE PROCEDURE SP_CREATEPETICIONUSUARIO
+//(@idsolicitante int, @idmodificado int, @idestadonuevo int)
+//AS
+//	DECLARE @max int
+//	SELECT @max = MAX(ID) + 1 FROM PETICIONESUSUARIOS
+//	INSERT INTO PETICIONESUSUARIOS (ID, ID_USUARIO_SOLICITANTE, ID_USUARIO_MODIFICAR, ID_ESTADO_NUEVO) VALUES (@max, @idsolicitante, @idmodificado, @idestadonuevo)
+//GO
 #endregion
 
 namespace CentroMedico.Repositories
@@ -823,11 +831,11 @@ namespace CentroMedico.Repositories
                            select datos;
             if (consulta != null)
             {
-                return 1;
+                return 0;
             }
             else
             {
-                return 0;
+                return 1;
             }
             
         }
@@ -942,9 +950,30 @@ namespace CentroMedico.Repositories
             return this.context.Paciente.Where(z => z.Apellido == apellido && z.Nombre == nombre && z.Correo == correo).FirstOrDefault();
         }
 
+        //metodo para encontrar el id medico de un paciente
         public MedicosPacientes GetMedicoPaciente(int idpaciente)
         {
             return this.context.MedicosPacientes.Where(z => z.Paciente == idpaciente).FirstOrDefault();
+        }
+
+        //Metodo para devolver todos los usuarios pacientes en estado de baja
+        public List<Paciente> GetAllPacientesBaja()
+        {
+            return this.context.Paciente.Where(z => z.EstadoUsuario == 2).ToList();
+        }
+        public List<Paciente> GetAllPacientes()
+        {
+            return this.context.Paciente.ToList();
+        }
+
+        //Metodo para insertar una peticion en usuarios
+        public void CreatePeticionUsuarios(int idsolicitante, int idmodificado, int nuevoestado)
+        {
+            string sql = "SP_CREATEPETICIONUSUARIO @idsolicitante, @idmodificado, @idestadonuevo";
+            SqlParameter pamIdSoli = new SqlParameter("idsolicitante",idsolicitante);
+            SqlParameter pamIdModi = new SqlParameter("idmodificado", idmodificado);
+            SqlParameter pamIdEstado = new SqlParameter("idestadonuevo", nuevoestado);
+            this.context.Database.ExecuteSqlRaw(sql, pamIdSoli, pamIdModi, pamIdEstado);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CentroMedico.Models;
 using CentroMedico.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CentroMedico.Controllers
 {
@@ -429,16 +430,68 @@ namespace CentroMedico.Controllers
             return RedirectToAction("ZonaRecepcionista");
         }
 
+        //Controller cita rapida Recepcionista
         public IActionResult CitaRapidaRecepcionista()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult CitaRapidaRecepcionista(string nombre , string apellido , string correo)
+        public IActionResult CitaRapidaRecepcionista(string nombre , string apellido , string correo, int? idmedico, int? idpaciente, DateTime? fecha, TimeSpan? hora)
         {
             Paciente paciente = this.repo.FindPacienteDistintoDetallado(nombre, apellido , correo);
-            ViewData["SUMEDICO"]= this.repo.GetMedicoPaciente(paciente.Id);
-            return View(paciente);
+            if (paciente != null)
+            {
+                if (paciente.EstadoUsuario == 1)
+                {
+                    MedicosPacientes mimedicoid = this.repo.GetMedicoPaciente(paciente.Id); ;
+                    ViewData["SUMEDICO"] = mimedicoid.Medico;
+
+                    if (idmedico != null && idpaciente != null && fecha != null && hora != null)
+                    {
+                        this.repo.CreateCitaPaciente(fecha.Value, hora.Value, idmedico.Value, idpaciente.Value);
+                        return RedirectToAction("ZonaRecepcionista");
+                    }
+
+                    return View(paciente);
+                }
+                else
+                {
+                    ViewData["ERROR"] = "Paciente en estado de BAJA , Solicita una Peticion al Admin";
+                    return View();
+                }
+            }
+            else
+            {
+                ViewData["ERROR"] = "Datos incorrectos , vuelva a preguntar";
+                return View();
+            }
+        }
+
+        //Controller para insertar una nueva peticion de usuario
+        public IActionResult CreatePeticionUsuario()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult CreatePeticionUsuario(string nombre, string apellido, string correo, int? idpaciente , int? estadonuevo)
+        {
+            int id = (int)HttpContext.Session.GetInt32("IDUSUARILOGUEADO");
+            ViewData["ESTADOUSUARIO"] = this.repo.GetEstados();
+            Paciente paciente = this.repo.FindPacienteDistintoDetallado(nombre, apellido, correo);
+            if (paciente != null)
+            {
+                if (idpaciente != null & estadonuevo != null)
+                {
+                    this.repo.CreatePeticionUsuarios(id,idpaciente.Value,estadonuevo.Value);
+                    return RedirectToAction("ZonaRecepcionista");
+                }
+                return View(paciente);
+            }
+            else
+            {
+                ViewData["ERROR"] = "Datos incorrectos , vuelva a preguntar";
+                return View();
+            }
         }
 
 
