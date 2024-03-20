@@ -1,0 +1,17 @@
+=========================
+====== CREDENCIALES =====
+=========================
+
+Admin: enrique@example.com
+Recepcionista: nuria@example.com
+Medico: juan@example.com
+Paciente: lucia@example.com
+
+Contraseña para todos: 12345
+
+========================
+======== Errores =======
+
+1. Zona Admin Perfil : Boton Back redirige mal.
+2. Zona Admin Crud Citas, Detalles Cita , Click sobre un Medico o Paciente : el boton Back redirige mal.
+3. Zona Medico , Perfil : Boton back redirige mal.
