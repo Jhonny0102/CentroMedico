@@ -99,6 +99,21 @@ namespace CentroMedico.Controllers
             return View(usuario);
         }
 
+        //Incluimos nuevo
+        public IActionResult PerfilAdmin(int idUsuario)
+        {
+            UsuarioDetallado usuario = this.repo.FindUsuarioDetallado(idUsuario);
+            List<Estados> tiposEstados = this.repo.GetEstados();
+            ViewData["ESTADOS"] = tiposEstados;
+            return View(usuario);
+        }
+        [HttpPost]
+        public IActionResult PerfilAdmin(Usuario admin)
+        {
+            this.repo.EditUsuario(admin.Id,admin.Nombre,admin.Apellido,admin.Correo,admin.Contra,admin.Id_EstadoUsuario,admin.Id_TipoUsuario);
+            return RedirectToAction("ZonaAdmin");
+        }
+
         //Controller que guarda los tipos de usuarios y muestra una lista de usuarios
         public IActionResult ZonaAdminUsuarios()
         {
@@ -249,12 +264,16 @@ namespace CentroMedico.Controllers
             if (idUsuario != null)
             {
                 Usuario usuario = this.repo.FindUsuario(idUsuario.Value);
+                List<Estados> tiposEstados = this.repo.GetEstados();
+                ViewData["ESTADOS"] = tiposEstados;
                 return View(usuario);
             }
             else
             {
                 int id = (int)HttpContext.Session.GetInt32("IDUSUARIOEDIT");
                 Usuario usuario = this.repo.FindUsuario(id);
+                List<Estados> tiposEstados = this.repo.GetEstados();
+                ViewData["ESTADOS"] = tiposEstados;
                 return View(usuario);
             }
         }

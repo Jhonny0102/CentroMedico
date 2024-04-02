@@ -1,23 +1,27 @@
-﻿@model CentroMedico.Models.Usuario
+﻿@model CentroMedico.Models.UsuarioDetallado
 
 @{
     List<Estados> tipos = ViewData["ESTADOS"] as List<Estados>;
-    ViewData["Title"] = "EditUsuario";
 }
 
-<h1>EditUsuario</h1>
+<h1>PerfilAdmin</h1>
 
-<h4>Usuario</h4>
+<h4>UsuarioDetallado</h4>
 <hr />
+
 <p>
-    <a asp-controller="CentroMedico" asp-action="ZonaAdminUsuarios" class="btn btn-dark">Back</a>
+    <a asp-controller="CentroMedico" asp-action="ZonaAdmin" class="btn btn-dark">
+        Back
+    </a>
 </p>
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="EditUsuario">
+        <form asp-action="PerfilAdmin">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <input asp-for="Id" class="form-control" hidden/>
+                <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
@@ -42,14 +46,13 @@
             <div class="form-group">
                 <label>Estado: </label>
                 <select name="Id_EstadoUsuario" class="form-control">
-                    @foreach (Estados estado in tipos)
-                    {
+                    @foreach(Estados estado in tipos){
                         <option value="@estado.Id">@estado.Estado</option>
                     }
                 </select>
             </div>
             <div class="form-group">
-                <input asp-for="Id_TipoUsuario" class="form-control"  hidden/>
+                <input type="text" name="Id_TipoUsuario" value="1" hidden/>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
