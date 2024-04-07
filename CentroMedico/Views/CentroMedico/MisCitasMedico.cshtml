@@ -31,7 +31,8 @@
                 <td>@miscitas.Hora</td>
                 <td>@miscitas.NombrePaciente @miscitas.ApellidoPaciente</td>
                 <td>
-                    @if(miscitas.IdEstadoCita != 1){
+                    @if (miscitas.IdEstadoCita != 1 || miscitas.Fecha < DateTime.Now)
+                    {
                         <a asp-controller="CentroMedico" asp-action="CitaMedicaFinal" asp-route-idcita="@miscitas.Id" class="btn btn-secondary">Entrar</a>
                         <span style="color:red">Esta Cita Finalizo</span>
                     }
