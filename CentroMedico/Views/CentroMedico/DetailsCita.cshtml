@@ -7,7 +7,7 @@
 <h1>DetailsCita</h1>
 
 <p>
-    <a asp-controller="CentroMedico" asp-action="ZonaAdmin" class="btn btn-dark">Back</a>
+    <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas" class="btn btn-dark">Back</a>
 </p>
 
 <div>
@@ -42,13 +42,13 @@
             @Html.DisplayNameFor(model => model.Medico)
         </dt>
         <dd class="col-sm-10">
-            <a asp-controller="CentroMedico" asp-action="DetailsMedico" asp-route-idMedico="@Model.Medico">@ViewData["NOMBREMEDICO"]</a>
+            <a asp-controller="CentroMedico" asp-action="DetailsMedicoCita" asp-route-idMedico="@Model.Medico" asp-route-idcita="@Model.Id">@ViewData["NOMBREMEDICO"]</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Paciente)
         </dt>
         <dd class="col-sm-10">
-            <a asp-controller="CentroMedico" asp-action="DetailsPaciente" asp-route-idPaciente="@Model.Paciente">@ViewData["NOMBREPACIENTE"]</a>
+            <a asp-controller="CentroMedico" asp-action="DetailsPacienteCita" asp-route-idPaciente="@Model.Paciente" asp-route-idcita="@Model.Id">@ViewData["NOMBREPACIENTE"]</a>
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Comentario)
@@ -57,8 +57,4 @@
             @Html.DisplayFor(model => model.Comentario)
         </dd>
     </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
 </div>

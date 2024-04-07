@@ -40,7 +40,7 @@
                 @Html.DisplayFor(modelItem => item.Correo)
             </td>
             <td>
-                <a asp-controller="CentroMedico" asp-action="DetailsPaciente" asp-route-idpaciente="@item.Paciente" class="btn btn-outline-success">Ver Informacion</a>
+                <a asp-controller="CentroMedico" asp-action="DetailsPacienteMedico" asp-route-idpaciente="@item.Paciente" class="btn btn-outline-success" asp-route-idMedico="@item.Medico">Ver Informacion</a>
             </td>
         </tr>
 }

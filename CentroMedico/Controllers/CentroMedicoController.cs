@@ -186,7 +186,7 @@ namespace CentroMedico.Controllers
             if (idMedico != null)
             {
                 MedicoDetallado medico = this.repo.FindMedicoDetallado(idMedico.Value);
-                return View(medico); //Buscar la manera de redirigir automaticamente a la pagina anterior
+                return View(medico);
             }
             else
             {
@@ -221,7 +221,7 @@ namespace CentroMedico.Controllers
             if (idPaciente != null)
             {
                 PacienteDetallado paciente = this.repo.FindPacienteDetallado(idPaciente.Value);
-                return View(paciente); //Buscar la manera de redirigir automaticamente a la pagina anterior
+                return View(paciente);
             }
             else
             {
@@ -359,6 +359,21 @@ namespace CentroMedico.Controllers
             return View(cita);
         }
 
+        //Controller que muestra la informacion de un medico llamado desde admin citas
+        public IActionResult DetailsMedicoCita(int idMedico, int idcita)
+        {
+            MedicoDetallado medico = this.repo.FindMedicoDetallado(idMedico);
+            ViewData["CITASELECCIONADA"] = idcita;
+            return View(medico);
+        }
+
+        public IActionResult DetailsPacienteCita(int idPaciente , int idcita)
+        {
+            PacienteDetallado paciente = this.repo.FindPacienteDetallado(idPaciente);
+            ViewData["CITASELECCIONADA"] = idcita;
+            return View(paciente);
+        }
+
         //Controller para eliminar una CITA
         public IActionResult DeleteCita(int idCita)
         {
@@ -366,18 +381,6 @@ namespace CentroMedico.Controllers
             return RedirectToAction("ZonaAdminCitas");
         }
 
-        //Controller para editar una CITA
-        public IActionResult EditCita(int idCita)
-        {
-            Cita cita = this.repo.FindCita(idCita);
-            return View(cita);
-        }
-        [HttpPost]
-        public IActionResult EditCita(Cita cita)
-        {
-            this.repo.EditCita(cita.Id,cita.Fecha,cita.Hora,cita.SeguimientoCita,cita.Medico,cita.Comentario);
-            return RedirectToAction("ZonaAdminCitas");
-        }
         /// Fin Zona CRUD CITAS ///
 
         /// Zona PETICIONES ///
@@ -524,6 +527,19 @@ namespace CentroMedico.Controllers
             Usuario usuario = this.repo.FindUsuario(idUsuario);
             HttpContext.Session.SetString("NOMBREMEDICOGUARDAR", usuario.Nombre+" "+usuario.Apellido);
             return View(usuario);
+        }
+
+        public IActionResult PerfilMedico(int idMedico)
+        {
+            MedicoDetallado medico = this.repo.FindMedicoDetallado(idMedico);
+            return View(medico);
+        }
+
+        public IActionResult DetailsPacienteMedico(int idPaciente, int idMedico)
+        {
+            PacienteDetallado paciente = this.repo.FindPacienteDetallado(idPaciente);
+            ViewData["MEDICOSELECCIONADO"] = idMedico;
+            return View(paciente);
         }
 
         //Controller que nos permite obtener todos los pacientes de una medico
