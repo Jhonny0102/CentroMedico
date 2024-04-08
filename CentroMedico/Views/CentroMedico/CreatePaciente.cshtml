@@ -4,12 +4,14 @@
     List<Especialidades> especialidades = ViewData["ESPECIALIDADES"] as List<Especialidades>;
 }
 
-<h1>CreatePaciente</h1>
 
-<h4>Paciente</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div style="margin:auto;width:50%;text-align:center">
+    <h1>Registrarse</h1>
+    <p>
+        <a asp-controller="CentroMedico" asp-action="Login" class="text-info">¿Ya tienes cuenta? Logueate</a>
+    </p>
+    <hr />
+    <div>
         <form asp-action="CreatePaciente">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -67,15 +69,12 @@
                     }
                 </select>
             </div>
+            <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

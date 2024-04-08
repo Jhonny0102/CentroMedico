@@ -1,27 +1,60 @@
 ﻿@model Usuario
 
-<h1>Zona Admin</h1>
-
-<h1>Bienvenido : @Model.Nombre</h1>
-
-<h3>Opciones:</h3>
-<ul class="list-group">
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="PerfilAdmin" asp-route-idUsuario="@Model.Id">Perfil</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="ZonaAdminUsuarios">CRUD Usuarios</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas">CRUD Citas</a>
-    </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Peticiones
-        </a>
-        <ul class="dropdown-menu">
-            <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="ZonaAdminPeticiones">Peticiones Usuarios</a></li>
-            <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="ZonaAdminPeticionesMedicamentos">Peticiones Medicamentos</a></li>
-        </ul>
-    </li>
-</ul>
+<h1>Zona Admininstración: Bienvenido @Model.Nombre</h1>
+<hr />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Perfil</h5>
+                <p class="card-text">Permite ver la informacion de tu perfil o si quieres poder editarla.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="PerfilAdmin" asp-route-idUsuario="@Model.Id" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Citas</h5>
+                <p class="card-text">Permite ver todas las citas, donde puedes eliminar la cita o ver sus detalles como hora y quienes intervienen.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="ZonaAdminCitas" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Peticiones</h5>
+                <p class="card-text">Permite aceptar o rechazar peticiones, tanto de usuarios como de medicamentos.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="ZonaAdminPeticiones" class="btn btn-outline-success">Usuarios</a>
+                    <a asp-controller="CentroMedico" asp-action="ZonaAdminPeticionesMedicamentos" class="btn btn-outline-success">Medicamentos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Usuarios</h5>
+                <p class="card-text">
+                    Permite <b>ver todos los usuarios</b> donde puedes filtrar por tipos de usuarios, ademas puedes ver sus datos , editarlos o eliminarlos. Tambien puedes <b>
+                        crear
+                        medicos y recepcionistas
+                    </b>.
+                </p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="ZonaAdminUsuarios" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
