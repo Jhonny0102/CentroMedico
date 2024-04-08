@@ -56,6 +56,7 @@ namespace CentroMedico.Controllers
             {
                 //Guardamos en la session el id del usuario encontrado.
                 HttpContext.Session.SetInt32("IDUSUARILOGUEADO",usuario.Id);
+                HttpContext.Session.SetInt32("TIPOUSUARILOGUEADO", usuario.Id_TipoUsuario);
                 if (usuario.Id_TipoUsuario == 1)
                 {
                     return RedirectToAction("ZonaAdmin");
