@@ -1,21 +1,44 @@
 ﻿@model CentroMedico.Models.Usuario
 
-@{
-    ViewData["Title"] = "ZonaRecepcionista";
-}
-
-<h1>ZonaRecepcionista</h1>
-
-<h3>Opciones:</h3>
-
-<ul class="list-group">
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="UpdateRecepcionsita">Perfil</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="CitaRapidaRecepcionista">Cita Rapida</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="CreatePeticionUsuario">Peticiones Usuario</a>
-    </li>
-</ul>
+<h1 style="text-align:center">Zona Recepción: Bienvenido @Model.Nombre</h1>
+<br />
+<hr />
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Perfil</h5>
+                <p class="card-text">Permite ver la informacion de tu perfil o si quieres poder editarla.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="UpdateRecepcionsita" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Cita Rapida</h5>
+                <p class="card-text">Permite reservar una cita de forma rapida mediante ciertos datos.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="CitaRapidaRecepcionista" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Peticiones Usuarios</h5>
+                <p class="card-text">Permite solicitar alta/baja de usuarios mediantes ciertos datos.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="CreatePeticionUsuario" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,25 +1,59 @@
 ﻿@model Usuario
 
-<h1>Zona Paciente</h1>
-
-<h1>Bienvenido : @Model.Nombre</h1>
-
-<p>
-    <a asp-controller="CentroMedico" asp-action="GetMiMedico" asp-route-idpaciente="@Model.Id">Ver Informacion Mi Medico</a>
+<h1 style="text-align:center">Zona Pacientes: Bienvenido @Model.Nombre</h1>
+<br />
+<p style="text-align:center">
+    <a asp-controller="CentroMedico" asp-action="GetMiMedico" asp-route-idpaciente="@Model.Id" class="text-info">¿Quien es mi médico?</a>
 </p>
-
-<h3>Opciones:</h3>
-<ul class="list-group">
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="ActualizarPaciente">Perfil</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="CreateCitaPaciente" >Crear cita</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="CitasPaciente">Mis Citas</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="MedicamentosYPacientes">Mis Medicamentos</a>
-    </li>
-</ul>
+<hr />
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Perfil</h5>
+                <p class="card-text">Permite ver la informacion de tu perfil o si quieres poder editarla.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="ActualizarPaciente" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Reservar Cita</h5>
+                <p class="card-text">Permite reservar citas con tu médico.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="CreateCitaPaciente" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Historial Citas</h5>
+                <p class="card-text">Permite visualizar todas tus citas pudiendo filtrar por fechas e incluso ver los detalles de tus citas.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="CitasPaciente" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Medicamentos</h5>
+                <p class="card-text">Permite ver todos tus medicamentos asignados , ademas puedes retirarlos cuando lo necesites.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="MedicamentosYPacientes" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

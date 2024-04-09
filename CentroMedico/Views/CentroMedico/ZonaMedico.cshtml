@@ -1,29 +1,57 @@
 ﻿@model Usuario
 
-<h1>Zona Medico</h1>
-
-<h1>Bienvenido : @Model.Nombre</h1>
-
-<h3>Opciones:</h3>
-<ul class="list-group">
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="PerfilMedico" asp-route-idMedico="@Model.Id">Perfil</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="MisPacientes" asp-route-idMedico="@Model.Id">Mis Pacientes</a>
-    </li>
-    <li class="list-group-item">
-        <a asp-controller="CentroMedico" asp-action="MisCitasMedico">Mis citas</a>
-    </li>
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Solicitar Peticiones Alta/Baja/Nuevo
-            </a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="CreatePeticionSinIdMedico" asp-route-idMedico="@Model.Id">Nuevo Medicamento</a></li>
-                <li><a class="dropdown-item" asp-controller="CentroMedico" asp-action="CreatePeticionConIdMedico" asp-route-idMedico="@Model.Id">Actualizar Medicamento</a></li>
-            </ul>
-        </li>
-    </ul>
-</ul>
+<h1 style="text-align:center">Zona Medicos: Bienvenido @Model.Nombre</h1>
+<br />
+<hr />
+<br />
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Perfil</h5>
+                <p class="card-text">Permite ver la informacion de tu perfil.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="PerfilMedico" asp-route-idMedico="@Model.Id" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Pacientes</h5>
+                <p class="card-text">Permite ver toda la informacion de tus pacientes.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="MisPacientes" asp-route-idMedico="@Model.Id" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Citas</h5>
+                <p class="card-text">Permite ver la informacion de todas tus citas y poder gestinarlas.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="MisCitasMedico" class="btn btn-outline-success">Acceder</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <img src="~/images/rueda.png" style="width:300px;height:300px" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">Peticiones Medicamentos</h5>
+                <p class="card-text">Permite dar de alta/baja medicamentos e incluso puedes solicitar nuevos.</p>
+                <div class="card-footer">
+                    <a asp-controller="CentroMedico" asp-action="CreatePeticionSinIdMedico" asp-route-idMedico="@Model.Id" class="btn btn-outline-success">Solicitar</a>
+                    <a asp-controller="CentroMedico" asp-action="CreatePeticionConIdMedico" asp-route-idMedico="@Model.Id" class="btn btn-outline-success">Alta/baja</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
