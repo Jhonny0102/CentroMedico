@@ -1,6 +1,7 @@
 ﻿using CentroMedico.Models;
 using CentroMedico.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CentroMedico.Controllers
@@ -329,10 +330,15 @@ namespace CentroMedico.Controllers
         /// Zona CRUD CITAS ///
         
         //Controller para mostrar todas las CITAS Detalladas 
-        public IActionResult ZonaAdminCitas()
+        public IActionResult ZonaAdminCitas(int? posicion)
         {
-            List<CitaDetallado> citas = this.repo.GetAllCitas();
-            return View(citas);
+            if (posicion == null)
+            {
+                posicion = 1;
+            }
+            CitaDetalladoModel model = this.repo.GetAllCitas(posicion.Value);
+            ViewData["REGISTROS"] = model.Registros;
+            return View(model.CitaDetallado);
         }
 
         //Controller para mostrar los detalles de una CITA

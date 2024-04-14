@@ -29,7 +29,7 @@ namespace CentroMedico.Repositories
         public Usuario FindUsuario(int id);
         public UsuarioDetallado FindUsuarioDetallado(int id);
 
-        public List<CitaDetallado> GetAllCitas();
+        public CitaDetalladoModel GetAllCitas(int posicion);
         public Cita FindCita(int idCita);
         public void DeleteCita(int idCita);
         public void EditCita(int idCita, DateTime fecha, TimeSpan hora, int idSeguimientoCita, int idMedico, string comentario);
@@ -42,6 +42,7 @@ namespace CentroMedico.Repositories
         public void OkPeticionMedicamento(int idPeti, int? idMedicamento ,string nombre , string? descripcion , int estado);
         public void OkNoPeticionMedicamento(int idPeti);
         public void CreatePeticionMedicamentoConId(int idMedico, int idMedicamento, int estadoMedicamento);
+        public void CreatePeticionUsuarios(int idsolicitante, int idmodificado, int nuevoestado);
         public void CreatePeticionMedicamentoSinId(int idMedico, string nombreMedicamento, string descripcionMedicamento);
         public List<Medicamentos> GetMedicamentos();
         public Medicamentos FindMedicamento(int idMedicamento);
@@ -62,6 +63,7 @@ namespace CentroMedico.Repositories
         public void UpdateMedicamentoYPaciente(int id);
         public Paciente FindPacienteDistintoDetallado(string nombre, string apellido, string correo);
         public MedicosPacientes GetMedicoPaciente(int idpaciente);
+
     }
 
 }

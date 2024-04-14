@@ -8,6 +8,7 @@ using System.Data;
 using Microsoft.VisualBasic;
 using System.ComponentModel;
 using System;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 
 #region VISTAS
 
@@ -369,6 +370,19 @@ using System;
 //	SELECT @max = MAX(ID) + 1 FROM PETICIONESUSUARIOS
 //	INSERT INTO PETICIONESUSUARIOS (ID, ID_USUARIO_SOLICITANTE, ID_USUARIO_MODIFICAR, ID_ESTADO_NUEVO) VALUES (@max, @idsolicitante, @idmodificado, @idestadonuevo)
 //GO
+
+//CREATE PROCEDURE SP_GRUPO_CITAS_ADMIN
+//(@posicion int, @registros int out)
+//AS
+//	SELECT @registros = COUNT(ID) FROM V_CITAS_DETALLADO
+//	SELECT ID, FECHA, HORA, ESTADO, MEDICO, COMENTARIO FROM
+//	(
+//		SELECT CAST(ROW_NUMBER() OVER (ORDER BY ID) AS INT) AS POSICION ,
+//        ID, FECHA, HORA, ESTADO, MEDICO, COMENTARIO
+//		FROM V_CITAS_DETALLADO
+//	) AS QUERY
+//	WHERE QUERY.POSICION >= @posicion AND QUERY.POSICION < (@posicion + 6)
+//GO
 #endregion
 
 namespace CentroMedico.Repositories
@@ -635,11 +649,28 @@ namespace CentroMedico.Repositories
         }
 
         //Metodo para obtener todas las citas
-        public List<CitaDetallado> GetAllCitas()
+        public CitaDetalladoModel GetAllCitas(int posicion)
         {
-            var consulta = from datos in this.context.CitaDetallado
-                           select datos;
-            return consulta.ToList();
+            string sql = "SP_GRUPO_CITAS_ADMIN @posicion, @registros out";
+
+            SqlParameter pamPosicion = new SqlParameter("@posicion", posicion);
+
+            SqlParameter pamRegistros = new SqlParameter("@registros", -1);
+
+            pamRegistros.Direction = ParameterDirection.Output;
+
+            var consulta = this.context.CitaDetallado.FromSqlRaw(sql, pamPosicion, pamRegistros);
+
+            List<CitaDetallado> citas = consulta.ToList();
+
+            int registros = (int)pamRegistros.Value;
+
+            return new CitaDetalladoModel
+
+            {
+                CitaDetallado = citas,
+                Registros = registros
+            };
         }
 
         //Metodo para encontrar una CITA
