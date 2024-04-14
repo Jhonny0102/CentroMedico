@@ -4,17 +4,20 @@
     ViewData["Title"] = "DetallesCitaPaciente";
 }
 
-<h1>DetallesCitaPaciente</h1>
+<h1>Detalles Cita</h1>
 
 <div>
-    <h4>CitaDetalladaMedicos</h4>
+    <a asp-action="CitasPaciente" class="btn btn-dark">Volver</a>
+</div>
+
+<div>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Fecha)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Fecha)
+            @Model.Fecha.ToString("MMMM dd, yyyy")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Hora)
@@ -47,7 +50,4 @@
             @Html.DisplayFor(model => model.Comentario)
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="CitasPaciente" class="btn btn-info">Volver</a>
 </div>

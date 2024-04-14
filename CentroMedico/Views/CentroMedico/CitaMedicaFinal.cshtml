@@ -5,9 +5,9 @@
 }
 
 
-<h1>Cita Medica Final con Paciente : @Model.NombrePaciente</h1>
+<h1 style="text-align:center">Cita Medica con @Model.NombrePaciente</h1>
 
-<p>
+<p style="text-align:center">
     <a asp-controller="CentroMedico" asp-action="MisCitasMedico" class="btn btn-dark">Back</a>
 </p>
 
@@ -18,7 +18,7 @@
     <label>Nombre Paciente: </label>
     <input type="text" placeholder="@Model.NombrePaciente  @Model.ApellidoPaciente" class="form-control"/>
     <label>Fecha Cita: </label>
-    <input type="text" placeholder="@Model.Fecha" class="form-control" />
+    <input type="text" placeholder="@Model.Fecha.ToString("MMMM dd, yyyy")" class="form-control" />
     <label>Hora Cita: </label>
     <input type="text" placeholder="@Model.Hora" class="form-control" />
     <label>Comentario: </label>
@@ -37,6 +37,7 @@
             <option value="@seguis.Id">@seguis.Estado</option>
         }
     </select>
+    <br />
     <button class="btn btn-outline-success">
         Finalizar Cita
     </button>

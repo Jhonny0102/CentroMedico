@@ -7,7 +7,7 @@
 
 <h1 style="text-align:center">Administración de Usuarios</h1>
 
-<p>
+<p >
     <a asp-controller="CentroMedico" asp-action="ZonaAdmin" class="btn btn-dark">Back</a>
 </p>
 
@@ -37,7 +37,7 @@
         Buscar
     </button>
 </form>
-
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -53,7 +53,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Correo)
             </th>
-            <th></th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
@@ -72,9 +72,9 @@
                 @Html.DisplayFor(modelItem => item.Correo)
             </td>
             <td>                    
-                <a asp-controller="CentroMedico" asp-action="Details" asp-route-idUsuario="@item.Id" asp-route-idTipo="@item.Id_TipoUsuario">Detalles</a>
-                <a asp-controller="CentroMedico" asp-action="DeleteUsuario" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Eliminar</a>
-                <a asp-controller="CentroMedico" asp-action="Edit" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario">Editar</a>
+                <a asp-controller="CentroMedico" asp-action="Details" asp-route-idUsuario="@item.Id" asp-route-idTipo="@item.Id_TipoUsuario" class="btn btn-outline-info">Detalles</a>
+                <a asp-controller="CentroMedico" asp-action="DeleteUsuario" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario" class="btn btn-outline-danger">Eliminar</a>
+                <a asp-controller="CentroMedico" asp-action="Edit" asp-route-id="@item.Id" asp-route-tipo="@item.Id_TipoUsuario" class="btn btn-outline-warning">Editar</a>
 
             </td>
         </tr>

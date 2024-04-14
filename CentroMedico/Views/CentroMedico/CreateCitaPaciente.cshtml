@@ -1,28 +1,31 @@
 ﻿@model Usuario
 
-<h1>Create Cita Paciente</h1>
+<div style="margin:auto;width:50%;text-align:center">
+    <h1>Solicitar Cita</h1>
 
-<p>
-    <a asp-controller="CentroMedico" asp-action="ZonaPaciente" class="btn btn-dark">Back</a>
-</p>
+    <p>
+        <a asp-controller="CentroMedico" asp-action="ZonaPaciente" class="btn btn-dark">Back</a>
+    </p>
 
-<form method="post">
-    <label>Nombre Paciente: </label>
-    <input type="text" name="paciente" class="form-control" placeholder="@Model.Nombre"/>
-    <input type="number" name="idpaciente" class="form-control" value="@Model.Id" hidden/>
-    <label>Nombre Medico: </label>
-    <input type="text" name="medico" class="form-control" placeholder="@ViewData["NOMBREMEDICO"]" />
-    <input type="number" name="idmedico" class="form-control" value="@ViewData["IDMEDICO"]" hidden/>
-    <label>Seleccione Fecha: </label>
-    <input type="date" class="form-control" name="fecha"/>
-    <label>Seleccione Hora: </label>
-    <input type="time" name="hora" class="form-control" />
-    <button class="btn btn-outline-success">
-        Pulsar
-    </button>
-</form>
+    <form method="post">
+        <label>Nombre Paciente: </label>
+        <input type="text" name="paciente" class="form-control" placeholder="@Model.Nombre" />
+        <input type="number" name="idpaciente" class="form-control" value="@Model.Id" hidden />
+        <label>Nombre Medico: </label>
+        <input type="text" name="medico" class="form-control" placeholder="@ViewData["NOMBREMEDICO"]" />
+        <input type="number" name="idmedico" class="form-control" value="@ViewData["IDMEDICO"]" hidden />
+        <label>Seleccione Fecha: </label>
+        <input type="date" class="form-control" name="fecha" />
+        <label>Seleccione Hora: </label>
+        <input type="time" name="hora" class="form-control" />
+        <br />
+        <button class="btn btn-outline-success">
+            Pulsar
+        </button>
+    </form>
 
-<h2 style="color:rebeccapurple">
-    @ViewData["MENSAJE"]
-    @ViewData["OTROMENSAJE"]
-</h2>
+    <h2 style="color:rebeccapurple">
+        @ViewData["MENSAJE"]
+        @ViewData["OTROMENSAJE"]
+    </h2>
+</div>

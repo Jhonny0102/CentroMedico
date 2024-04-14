@@ -4,9 +4,9 @@
     ViewData["Title"] = "MisPacientes";
 }
 
-<h1>MisPacientes</h1>
+<h1 style="text-align:center">Mis Pacientes</h1>
 
-<p>
+<p style="text-align:center">
     <a asp-controller="CentroMedico" asp-action="ZonaMedico" class="btn btn-dark">
         Back
     </a>
@@ -24,7 +24,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Correo)
             </th>
-            <th></th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody>

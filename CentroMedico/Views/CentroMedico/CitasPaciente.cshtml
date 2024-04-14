@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<CentroMedico.Models.CitaDetalladaMedicos>
 
-<h1>CitasPaciente</h1>
+<h1 style="text-align:center">Citas Reservadas</h1>
 
-<p>
+<p style="text-align:center">
     <a asp-controller="CentroMedico" asp-action="ZonaPaciente" class="btn btn-dark">Back</a>
 </p>
 
-<h4>Filtro Porr Fechas</h4>
+<h4>Selecciona Fecha/s</h4>
 <form method="post">
     <label>Desde: </label>
     <input type="date" name="fechadesde" class="form-control" />
@@ -16,7 +16,7 @@
         Buscar
     </button>
 </form>
-
+<br />
 <div class="row row-cols-1 row-cols-md-3 g-4">
     @foreach (CitaDetalladaMedicos citas in Model)
     {

@@ -11,34 +11,37 @@
     List<Estados> estados = ViewData["ESTADOS"] as List<Estados>;
 }
 
-<h1>Create Peticion Medicamentos</h1>
+<div style="margin:auto;width:50%;text-align:center">
+    <h1>Formulario Peticion Estado Medicamentos</h1>
 
-<p>
-    <a asp-controller="CentroMedico" asp-action="ZonaMedico" class="btn btn-dark">Back</a>
-</p>
+    <p>
+        <a asp-controller="CentroMedico" asp-action="ZonaMedico" class="btn btn-dark">Back</a>
+    </p>
 
-<form method="post">
-    <label>Medico Solicitante:</label>
-    <input type="text" name="nombreMedico" class="form-control" placeholder="@nombreMedico" />
-    <input type="text" name="idMedico" class="form-control" value="@idMedico" hidden />
-    <label>Seleccione un medicamento: </label>
-    <select name="idMedicamento" class="form-select">
-        @foreach (Medicamentos medic in Model)
-        {
-            <option value="@medic.Id">@medic.Nombre</option>
-        }
-    </select>
-    <h3 style="color:red">
-        @ViewData["MENSAJEMEDICAMENTO"]
-    </h3>
-    <label>Seleccione Estado: </label>
-    <select name="estadoMedicamento" class="form-select">
-        @foreach (Estados estado in estados)
-        {
-            <option value="@estado.Id">@estado.Estado</option>
-        }
-    </select>
-    <button class="btn btn-success">
-        Enviar Peticion
-    </button>
-</form>
+    <form method="post">
+        <label>Medico Solicitante:</label>
+        <input type="text" name="nombreMedico" class="form-control" placeholder="@nombreMedico" />
+        <input type="text" name="idMedico" class="form-control" value="@idMedico" hidden />
+        <label>Seleccione un medicamento: </label>
+        <select name="idMedicamento" class="form-select">
+            @foreach (Medicamentos medic in Model)
+            {
+                <option value="@medic.Id">@medic.Nombre</option>
+            }
+        </select>
+        <h3 style="color:red">
+            @ViewData["MENSAJEMEDICAMENTO"]
+        </h3>
+        <label>Seleccione Estado: </label>
+        <select name="estadoMedicamento" class="form-select">
+            @foreach (Estados estado in estados)
+            {
+                <option value="@estado.Id">@estado.Estado</option>
+            }
+        </select>
+        <br />
+        <button class="btn btn-success">
+            Enviar Peticion
+        </button>
+    </form>
+</div>

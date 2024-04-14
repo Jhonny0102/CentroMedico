@@ -874,7 +874,11 @@ namespace CentroMedico.Repositories
         //Metodo para encontrar citas que tiene un MEDICO
         public List<CitaDetalladaMedicos> GetCitasDetalladasMedico(int idmedico)
         {
-            return this.context.CitaDetalladaMedicos.Where(z=>z.IdMedico == idmedico).ToList();
+            var consulta = from datos in this.context.CitaDetalladaMedicos
+                           where datos.IdMedico == idmedico
+                           select datos;
+            consulta = consulta.OrderByDescending(z => z.Fecha);
+            return consulta.ToList();
         }
 
         //Metodo para filtrar por fecha las citas de los MEDICOS
