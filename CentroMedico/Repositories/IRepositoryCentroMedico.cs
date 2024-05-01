@@ -5,7 +5,9 @@ namespace CentroMedico.Repositories
     public interface IRepositoryCentroMedico
     {
         public Usuario GetLogin(string correo, string contra);
-        
+        public int GetIdMedico(int especialidad);
+
+
         public void CreatePaciente(string nombre, string apellido, string correo, string contra, int telefono, string direccion, int edad, string genero, int medico);
         public void CreateMedico(string nombre, string apellido, string correo, string contra, int especialidad);
         public void CreateUsuario(string nombre, string apellido, string correo, string contra, int tipo );

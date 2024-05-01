@@ -182,7 +182,7 @@ using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 //    delete from medicopaciente
 //	where id_medico=@id
 
-//	delete from peticionesbajas
+//	delete from peticionesbajas //Recuerda que peticionesbajas ya no existe como tabla
 //	where id_usuario=@id
 
 //	delete from medicamentopaciente
